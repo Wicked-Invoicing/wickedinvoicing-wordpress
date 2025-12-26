@@ -1,5 +1,5 @@
 {
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "wicked-invoicing/client-email",
   "title": "Customers Email",
   "category": "wicked-invoices",

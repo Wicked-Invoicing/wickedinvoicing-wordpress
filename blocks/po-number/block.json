@@ -1,5 +1,5 @@
 {
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "wicked-invoicing/po-number",
   "title": "PO Number",
   "category": "wicked-invoices",

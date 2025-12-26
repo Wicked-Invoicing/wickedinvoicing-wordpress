@@ -1,5 +1,5 @@
 {
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "wicked-invoicing/start-date",
   "title": "Invoice Start Date",
   "category": "wicked-invoices",

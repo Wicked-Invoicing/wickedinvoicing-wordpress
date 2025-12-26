@@ -1,5 +1,5 @@
 {
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "wicked-invoicing/billing-address",
   "title": "Customers Billing Address",
   "category": "wicked-invoices",

@@ -1,5 +1,5 @@
 {
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "wicked-invoicing/shipping-address",
   "title": "Customers Shipping Address",
   "category": "wicked-invoices",

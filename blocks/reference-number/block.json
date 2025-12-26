@@ -1,5 +1,5 @@
 {
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "wicked-invoicing/reference-number",
   "title": "Reference Number",
   "category": "wicked-invoices",

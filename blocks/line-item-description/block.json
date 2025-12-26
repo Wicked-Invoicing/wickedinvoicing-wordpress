@@ -1,5 +1,5 @@
 {
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "wicked-invoicing/line-item-description",
   "title": "Line Item: Description",
   "parent": [ "wicked-invoicing/line-items" ],

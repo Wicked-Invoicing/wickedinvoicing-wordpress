@@ -1,6 +1,7 @@
 <?php
-
-
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 
 if ( ! function_exists( 'wicked_invoicing_payments' ) ) {

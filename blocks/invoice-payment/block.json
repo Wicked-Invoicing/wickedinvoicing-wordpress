@@ -1,5 +1,5 @@
 {
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "wicked-invoicing/invoice-payment",
   "title": "Invoice Payment",
   "category": "wicked-invoices",

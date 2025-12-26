@@ -5,7 +5,7 @@ Tags: invoices, invoicing, billing, clients, payments
 Requires at least: 6.0
 Tested up to: 6.9
 Requires PHP: 8.0
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,12 @@ Wicked Invoicing is designed to be theme-agnostic. Invoices use regular WordPres
 = Is the free plugin GDPR compliant? =
 
 The plugin stores client data (name, email, invoice details) inside your WordPress database. As the site owner, you are responsible for configuring your site, privacy policy, and any required consent to comply with local laws (including GDPR).
+
+= Where can I find the source code and build tools? =
+
+The full source code (including the admin UI source and build tooling) is maintained here:
+https://github.com/Wicked-Invoicing/wickedinvoicing-wordpress
+Admin UI source lives in /views/admin and production build output is in /views/admin/build.
 
 == Screenshots ==
 

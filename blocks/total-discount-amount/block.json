@@ -1,5 +1,5 @@
 {
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "wicked-invoicing/total-discount-amount",
   "title": "Total Discount Amount",
   "category": "wicked-invoices",
