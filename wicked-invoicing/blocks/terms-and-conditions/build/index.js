@@ -1,0 +1,1 @@
+(()=>{"use strict";const i=window.wp.blocks,n=window.wp.i18n,o=window.wp.blockEditor,c=window.ReactJSXRuntime;(0,i.registerBlockType)("wicked-invoicing/terms-and-conditions",{edit:function(){const i=(0,o.useBlockProps)();return(0,c.jsx)("div",{...i,children:(0,n.__)("Terms and Conditions","wicked-invoicing")})},save:()=>null})})();

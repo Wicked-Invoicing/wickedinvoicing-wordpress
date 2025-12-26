@@ -1,0 +1,63 @@
+/* Container for the whole table */
+.wi-line-items { display: block; }
+
+/* Each row uses a 6-column grid: Description | Qty | Rate | Discount | Tax | Total */
+.wi-line-items__row {
+	display: grid;
+	grid-template-columns: 3fr 0.75fr 1fr 1fr 1fr 1fr;
+	column-gap: 1rem;
+	align-items: start;
+	margin-bottom: 0.5rem;
+}
+
+/* Cells are block by default; keep it simple */
+.wi-line-items__cell { display: block; }
+
+/* Right-align numbers */
+.wi-line-items__cell--qty,
+.wi-line-items__cell--rate,
+.wi-line-items__cell--discount,
+.wi-line-items__cell--tax,
+.wi-line-items__cell--total {
+	text-align: right;
+	white-space: nowrap;
+}
+
+/* Ensure grid items can shrink and not force overflow */
+.wi-line-items--editor .wi-line-items__header,
+.wi-line-items--editor .wi-line-items__preview {
+	width: 100%;
+}
+
+.wi-line-items--editor .wi-line-items__row,
+.wi-line-items--editor .wi-line-items__header {
+	display: grid !important;
+	/* gridTemplateColumns is set inline by the block */
+	column-gap: 1rem;
+	align-items: start;
+}
+
+.wi-line-items--editor .wi-line-items__cell {
+	min-width: 0; /* KEY: allow shrink inside grid track */
+}
+
+/* Right-align numeric columns in editor preview and header */
+.wi-line-items--editor .wi-line-items__cell--quantity,
+.wi-line-items--editor .wi-line-items__cell--rate,
+.wi-line-items--editor .wi-line-items__cell--discount,
+.wi-line-items--editor .wi-line-items__cell--tax,
+.wi-line-items--editor .wi-line-items__cell--total {
+	text-align: right;
+}
+
+/* Optional: if you ever see horizontal overflow, allow scrolling rather than wrapping */
+.wi-line-items--editor .wi-line-items__preview {
+	overflow-x: auto;
+}
+.wi-line-items--editor .wi-line-items__cell { min-width: 0; }
+.wi-line-items--editor .wi-line-items__cell--description {
+	white-space: normal;
+	overflow-wrap: anywhere;
+	word-break: break-word;
+	hyphens: auto;
+}

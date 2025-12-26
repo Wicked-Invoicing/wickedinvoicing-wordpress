@@ -1,0 +1,1 @@
+(()=>{"use strict";const i=window.wp.blocks,c=(window.wp.i18n,window.wp.blockEditor),e=window.ReactJSXRuntime;(0,i.registerBlockType)("wicked-invoicing/line-item-discount",{edit:function(){return(0,e.jsx)("div",{...(0,c.useBlockProps)({className:"wi-cell-chip"}),children:(0,e.jsx)("span",{className:"wi-cell-chip__label",children:"Discount"})})},save:()=>null})})();

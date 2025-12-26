@@ -1,0 +1,44 @@
+{
+  "apiVersion": 2,
+  "name": "wicked-invoicing/company-phone",
+  "title": "Company",
+  "category": "wicked-invoices",
+  "icon": "id-alt",
+  "description": "Displays the current invoice’s unique ID.",
+  "attributes": {
+    "textColor": { "type": "string" },
+    "backgroundColor": { "type": "string" },
+    "align": { "type": "string" },
+    "fontSize": { "type": "string" },
+    "paddingTop": { "type": "string" },
+    "paddingBottom": { "type": "string" },
+    "marginTop": { "type": "string" },
+    "borderRadius": { "type": "string" },
+    "boxShadow": { "type": "string" }
+  },
+"supports": {
+    "align": [ "left", "center", "right", "wide", "full" ],
+    "html": false,
+    "customClassName": true,
+    "color": {
+      "text": true,
+      "background": true
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true
+    },
+    "spacing": {
+      "padding": true,
+      "margin": true
+    },
+    "border": {
+      "radius": true,
+      "color": true
+    },
+    "__experimentalBoxShadow": true
+  },
+  "editorScript": "file:./build/index.js",
+  "editorStyle": "file:./build/editor.css",
+  "style": "file:./build/style.css"
+}

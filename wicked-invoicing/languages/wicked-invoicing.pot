@@ -1,0 +1,329 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Wicked Invoicing 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wicked-invoicing\n"
+"POT-Creation-Date: 2025-12-15 02:33+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: ChatGPT POT generator\n"
+"X-Domain: wicked-invoicing\n"
+
+msgid "A valid email is required to create a WordPress user."
+msgstr ""
+
+msgid "A valid email is required."
+msgstr ""
+
+msgid "Access Denied"
+msgstr ""
+
+msgid "Add New"
+msgstr ""
+
+msgid "All Invoices"
+msgstr ""
+
+msgid "BCC (comma-separated emails)"
+msgstr ""
+
+msgid "CC (comma-separated emails)"
+msgstr ""
+
+msgid "Company Address"
+msgstr ""
+
+msgid "Company Name"
+msgstr ""
+
+msgid "Company Notification Email"
+msgstr ""
+
+msgid "Company Phone"
+msgstr ""
+
+msgid "Create Invoice"
+msgstr ""
+
+msgid "Customer Address"
+msgstr ""
+
+msgid "Customer Billing Address"
+msgstr ""
+
+msgid "Customer Email"
+msgstr ""
+
+msgid "Customer Name"
+msgstr ""
+
+msgid "Customer Shipping Address"
+msgstr ""
+
+msgid "Dashboard"
+msgstr ""
+
+msgid "Default Invoice (Free)"
+msgstr ""
+
+msgid "Default Invoice (Pro)"
+msgstr ""
+
+msgid "Deposit Paid"
+msgstr ""
+
+msgid "Deposit Required"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Discount"
+msgstr ""
+
+msgid "Due Date"
+msgstr ""
+
+msgid "Due Date must be after the Invoice Date."
+msgstr ""
+
+msgid "Edit Invoice"
+msgstr ""
+
+msgid "Edit This Invoice"
+msgstr ""
+
+msgid "Every Five Minutes (Wicked Invoicing)"
+msgstr ""
+
+msgid "Failed to create cloned invoice."
+msgstr ""
+
+msgid "Failed to create invoice."
+msgstr ""
+
+msgid "Forbidden"
+msgstr ""
+
+msgid "Hide Invoice Template Title"
+msgstr ""
+
+msgid "Invalid invoice status \"%s\". Allowed: %s"
+msgstr ""
+
+msgid "Invalid invoice."
+msgstr ""
+
+msgid "Invalid source invoice."
+msgstr ""
+
+msgid "Invoice"
+msgstr ""
+
+msgid "Invoice ID"
+msgstr ""
+
+msgid "Invoice ID / Name is required field"
+msgstr ""
+
+msgid "Invoice ID is required"
+msgstr ""
+
+msgid "Invoice ID is required."
+msgstr ""
+
+msgid "Invoice Max‐Width (e.g. 800px or 75%)"
+msgstr ""
+
+msgid "Invoice Start Date"
+msgstr ""
+
+msgid "Invoice Template Options"
+msgstr ""
+
+msgid "Invoice Update"
+msgstr ""
+
+msgid "Invoice not found"
+msgstr ""
+
+msgid "Invoice not found."
+msgstr ""
+
+msgid "Invoice template missing."
+msgstr ""
+
+msgid "Invoice {{invoice_id}} marked paid"
+msgstr ""
+
+msgid "Invoice {{invoice_id}} sent"
+msgstr ""
+
+msgid "Invoices"
+msgstr ""
+
+msgid "Line Item: Description"
+msgstr ""
+
+msgid "Line Item: Discount"
+msgstr ""
+
+msgid "Line Item: Quantity"
+msgstr ""
+
+msgid "Line Item: Rate"
+msgstr ""
+
+msgid "Line Item: Tax"
+msgstr ""
+
+msgid "Line Item: Total"
+msgstr ""
+
+msgid "Line Items (Loop)"
+msgstr ""
+
+msgid "Logs"
+msgstr ""
+
+msgid "Notes"
+msgstr ""
+
+msgid "Notifications"
+msgstr ""
+
+msgid "Optional. Leave blank to use the current invoice."
+msgstr ""
+
+msgid "PO Number"
+msgstr ""
+
+msgid "Paid"
+msgstr ""
+
+msgid "Payment Button"
+msgstr ""
+
+msgid "Payment amount must be greater than zero."
+msgstr ""
+
+msgid "Payments"
+msgstr ""
+
+msgid "Payments controller does not implement list_payments()."
+msgstr ""
+
+msgid "Payments controller is not available."
+msgstr ""
+
+msgid "Pending"
+msgstr ""
+
+msgid "Please enter a valid due date (YYYY-MM-DD)."
+msgstr ""
+
+msgid "Please enter a valid start date (YYYY-MM-DD)"
+msgstr ""
+
+msgid "Please provide a valid email address."
+msgstr ""
+
+msgid "Qty"
+msgstr ""
+
+msgid "Rate"
+msgstr ""
+
+msgid "Reference Number"
+msgstr ""
+
+msgid "Security"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "Source invoice not found."
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Subtotal"
+msgstr ""
+
+msgid "Support"
+msgstr ""
+
+msgid "Tax"
+msgstr ""
+
+msgid "Temp"
+msgstr ""
+
+msgid "Terms & Conditions"
+msgstr ""
+
+msgid "That email address is already in use."
+msgstr ""
+
+msgid "Total"
+msgstr ""
+
+msgid "Total Amount Due"
+msgstr ""
+
+msgid "Total Discount Amount"
+msgstr ""
+
+msgid "Total Tax Amount"
+msgstr ""
+
+msgid "User not found"
+msgstr ""
+
+msgid "View invoices for this client"
+msgstr ""
+
+msgid "Wicked Admin"
+msgstr ""
+
+msgid "Wicked Client"
+msgstr ""
+
+msgid "Wicked Employee"
+msgstr ""
+
+msgid "Wicked Invoices"
+msgstr ""
+
+msgid "Wicked Invoicing"
+msgstr ""
+
+msgid "Wicked Invoicing shortcode"
+msgstr ""
+
+msgid "You do not have permission to customize Wicked Invoicing UI."
+msgstr ""
+
+msgid "You do not have permission to edit invoices."
+msgstr ""
+
+msgid "You do not have permission to modify payments."
+msgstr ""
+
+msgid "You do not have permission to view payments."
+msgstr ""
+
+msgid "You must be logged in to send a test."
+msgstr ""
+
+msgid "Your account has no valid email address."
+msgstr ""
+
+msgid "subscription_anchor_dom must be between 1 and 28."
+msgstr ""
+
+msgid "subscription_mode must be \"days\" or \"anchor\"."
+msgstr ""

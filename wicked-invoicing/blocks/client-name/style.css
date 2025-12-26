@@ -1,0 +1,11 @@
+/* Front-end: you can leave blank or add styling if needed */
+.wicked-invoicing-admin .theme-toggle {
+	position: absolute;
+	top: 1rem;
+	right: 1rem;
+	background: none;
+	border: none;
+	font-size: 0.9rem;
+	color: inherit;
+	cursor: pointer;
+}

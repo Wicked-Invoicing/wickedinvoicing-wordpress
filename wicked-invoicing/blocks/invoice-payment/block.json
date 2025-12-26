@@ -1,0 +1,78 @@
+{
+  "apiVersion": 2,
+  "name": "wicked-invoicing/invoice-payment",
+  "title": "Invoice Payment",
+  "category": "wicked-invoices",
+  "icon": "cart",
+  "description": "Shows payment buttons for the current invoice.",
+  "usesContext": [ "postId" ],
+
+  "attributes": {
+    "enabledProcessors": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "buttonVariant": {
+      "type": "string",
+      "default": "solid"
+    },
+    "buttonShape": {
+      "type": "string",
+      "default": "rounded"
+    },
+    "buttonSize": {
+      "type": "string",
+      "default": "md"
+    },
+    "buttonAlign": {
+      "type": "string",
+      "default": "right"
+    },
+    "buttonBgColor": {
+      "type": "string",
+      "default": ""
+    },
+    "buttonTextColor": {
+      "type": "string",
+      "default": ""
+    },
+    "buttonGradient": {
+      "type": "string",
+      "default": ""
+    },
+
+    "backgroundImageId": {
+      "type": "number",
+      "default": 0
+    },
+    "backgroundImageUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "backgroundImageWidth": {
+      "type": "number",
+      "default": 0
+    },
+    "backgroundImageHeight": {
+      "type": "number",
+      "default": 0
+    }
+  },
+
+  "supports": {
+    "align": [ "wide", "full" ],
+    "spacing": {
+      "padding": true,
+      "margin": true
+    },
+    "border": {
+      "radius": true,
+      "color": true
+    }
+  },
+
+  "editorScript": "file:./build/index.js",
+  "editorStyle": "file:./editor.css",
+  "style": "file:./style.css"
+}

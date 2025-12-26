@@ -1,0 +1,46 @@
+{
+  "apiVersion": 2,
+  "name": "wicked-invoicing/line-items",
+  "title": "Line Items (Loop)",
+  "category": "wicked-invoices",
+  "icon": "editor-table",
+  "description": "Renders invoice line items as rows. Arrange the columns with inner blocks.",
+  "attributes": {
+    "headers": {
+      "type": "object",
+      "default": {
+        "wicked-invoicing/line-item-description": "Description",
+        "wicked-invoicing/line-item-quantity": "Qty",
+        "wicked-invoicing/line-item-rate": "Rate",
+        "wicked-invoicing/line-item-discount": "Discount",
+        "wicked-invoicing/line-item-tax": "Tax",
+        "wicked-invoicing/line-item-total": "Total"
+      }
+    },
+    "showPreview": { "type": "boolean", "default": true },
+    "previewRows": { "type": "number", "default": 2 },
+    "columnWidths": {
+        "type": "object",
+        "default": {
+          "description": "30%",
+          "quantity": "10%",
+          "rate": "15%",
+          "discount": "15%",
+          "tax": "15%",
+          "total": "15%"
+        }
+      }
+  },
+  "supports": {
+    "html": false
+  },
+  "providesContext": {
+    "wicked-invoicing/lineItem": "lineItem",
+    "wicked-invoicing/lineItemIndex": "lineItemIndex"
+  },
+  "usesContext": [],
+  "editorScript": "file:./build/index.js",
+  "editorStyle": "file:./build/editor.css",
+  "style": "file:./build/style.css",
+  "renderCallback": "Wicked_Invoicing\\Controllers\\wicked_inv_render_line_items_block"
+}

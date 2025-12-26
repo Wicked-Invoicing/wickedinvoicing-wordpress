@@ -1,0 +1,21 @@
+/* Compact draggable chip */
+.wi-cell-chip {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 32px;
+	padding: 4px 10px;
+	border: 1px dashed rgba(0,0,0,.25);
+	border-radius: 16px;
+	background: rgba(0,0,0,.03);
+	font-size: 12px;
+	line-height: 1;
+	cursor: grab;
+}
+
+/* Reduce block chrome in editor for a cleaner look */
+.wi-cell-chip .block-editor-block-toolbar,
+.wi-cell-chip .block-editor-block-contextual-toolbar,
+.wi-cell-chip .block-editor-block-inspector {
+	display: none;
+}

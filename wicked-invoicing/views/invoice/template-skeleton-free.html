@@ -1,0 +1,209 @@
+<!-- wp:group {"className":"wi-invoice-layout","style":{"border":{"width":"1px","style":"solid"},"spacing":{"padding":{"top":"32px","right":"32px","bottom":"32px","left":"32px"},"blockGap":"24px"}}} -->
+<div class="wp-block-group wi-invoice-layout" style="border-style:solid;border-width:1px;padding-top:32px;padding-right:32px;padding-bottom:32px;padding-left:32px"><!-- wp:columns {"verticalAlignment":"top"} -->
+<div class="wp-block-columns are-vertically-aligned-top"><!-- wp:column {"verticalAlignment":"top","width":"60%"} -->
+<div class="wp-block-column is-vertically-aligned-top" style="flex-basis:60%"><!-- wp:wicked-invoicing/company-name {"className":"wi-company-name"} /-->
+
+<!-- wp:wicked-invoicing/company-address {"className":"wi-company-address"} /-->
+
+<!-- wp:wicked-invoicing/company-email {"className":"wi-company-email"} /-->
+
+<!-- wp:wicked-invoicing/company-phone {"className":"wi-company-phone"} /--></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"verticalAlignment":"top","width":"40%"} -->
+<div class="wp-block-column is-vertically-aligned-top" style="flex-basis:40%"><!-- wp:heading {"textAlign":"right","style":{"typography":{"fontSize":"32px","fontWeight":"700"}}} -->
+<h2 class="wp-block-heading has-text-align-right" style="font-size:32px;font-weight:700">INVOICE</h2>
+<!-- /wp:heading -->
+
+<!-- wp:group {"className":"wi-invoice-meta","style":{"spacing":{"blockGap":"4px"}}} -->
+<div class="wp-block-group wi-invoice-meta"><!-- wp:columns {"isStackedOnMobile":false} -->
+<div class="wp-block-columns is-not-stacked-on-mobile"><!-- wp:column {"width":"55%"} -->
+<div class="wp-block-column" style="flex-basis:55%"><!-- wp:paragraph {"align":"right"} -->
+<p class="has-text-align-right"><strong>Invoice #:</strong></p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"45%"} -->
+<div class="wp-block-column" style="flex-basis:45%"><!-- wp:wicked-invoicing/invoice-id /--></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:columns {"isStackedOnMobile":false} -->
+<div class="wp-block-columns is-not-stacked-on-mobile"><!-- wp:column {"width":"55%"} -->
+<div class="wp-block-column" style="flex-basis:55%"><!-- wp:paragraph {"align":"right"} -->
+<p class="has-text-align-right"><strong>Status:</strong></p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"45%"} -->
+<div class="wp-block-column" style="flex-basis:45%"><!-- wp:wicked-invoicing/status /--></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:columns {"isStackedOnMobile":false} -->
+<div class="wp-block-columns is-not-stacked-on-mobile"><!-- wp:column {"width":"55%"} -->
+<div class="wp-block-column" style="flex-basis:55%"><!-- wp:paragraph {"align":"right"} -->
+<p class="has-text-align-right"><strong>Issue date:</strong></p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"45%"} -->
+<div class="wp-block-column" style="flex-basis:45%"><!-- wp:wicked-invoicing/start-date /--></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:columns {"isStackedOnMobile":false} -->
+<div class="wp-block-columns is-not-stacked-on-mobile"><!-- wp:column {"width":"55%"} -->
+<div class="wp-block-column" style="flex-basis:55%"><!-- wp:paragraph {"align":"right"} -->
+<p class="has-text-align-right"><strong>Due date:</strong></p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"45%"} -->
+<div class="wp-block-column" style="flex-basis:45%"><!-- wp:wicked-invoicing/due-date /--></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:columns {"isStackedOnMobile":false} -->
+<div class="wp-block-columns is-not-stacked-on-mobile"><!-- wp:column {"width":"55%"} -->
+<div class="wp-block-column" style="flex-basis:55%"><!-- wp:paragraph {"align":"right"} -->
+<p class="has-text-align-right"><strong>PO #:</strong></p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"45%"} -->
+<div class="wp-block-column" style="flex-basis:45%"><!-- wp:wicked-invoicing/po-number /--></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:columns {"isStackedOnMobile":false} -->
+<div class="wp-block-columns is-not-stacked-on-mobile"><!-- wp:column {"width":"55%"} -->
+<div class="wp-block-column" style="flex-basis:55%"><!-- wp:paragraph {"align":"right"} -->
+<p class="has-text-align-right"><strong>Reference:</strong></p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"45%"} -->
+<div class="wp-block-column" style="flex-basis:45%"><!-- wp:wicked-invoicing/reference-number /--></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:separator {"opacity":"css"} -->
+<hr class="wp-block-separator has-css-opacity"/>
+<!-- /wp:separator -->
+
+<!-- wp:columns -->
+<div class="wp-block-columns"><!-- wp:column -->
+<div class="wp-block-column"><!-- wp:heading {"level":4} -->
+<h4 class="wp-block-heading">Bill To</h4>
+<!-- /wp:heading -->
+
+<!-- wp:wicked-invoicing/client-name /-->
+
+<!-- wp:wicked-invoicing/billing-address /-->
+
+<!-- wp:wicked-invoicing/client-email /--></div>
+<!-- /wp:column -->
+
+<!-- wp:column -->
+<div class="wp-block-column"><!-- wp:heading {"level":4} -->
+<h4 class="wp-block-heading">Ship To</h4>
+<!-- /wp:heading -->
+
+<!-- wp:wicked-invoicing/shipping-address /--></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:group {"className":"wi-line-items-section","style":{"spacing":{"blockGap":"16px","margin":{"top":"24px"}}}} -->
+<div class="wp-block-group wi-line-items-section" style="margin-top:24px"><!-- wp:heading {"level":4} -->
+<h4 class="wp-block-heading">Invoice details</h4>
+<!-- /wp:heading -->
+
+<!-- wp:wicked-invoicing/line-items /--></div>
+<!-- /wp:group -->
+
+<!-- wp:columns {"style":{"spacing":{"margin":{"top":"24px"}}}} -->
+<div class="wp-block-columns" style="margin-top:24px"><!-- wp:column {"width":"55%"} -->
+<div class="wp-block-column" style="flex-basis:55%"><!-- wp:group {"style":{"spacing":{"blockGap":"16px"}}} -->
+<div class="wp-block-group"><!-- wp:heading {"level":5} -->
+<h5 class="wp-block-heading">Notes</h5>
+<!-- /wp:heading -->
+
+<!-- wp:wicked-invoicing/notes /-->
+
+<!-- wp:heading {"level":5} -->
+<h5 class="wp-block-heading">Terms &amp; Conditions</h5>
+<!-- /wp:heading -->
+
+<!-- wp:wicked-invoicing/terms-and-conditions /--></div>
+<!-- /wp:group --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"45%"} -->
+<div class="wp-block-column" style="flex-basis:45%"><!-- wp:group {"className":"wi-totals","style":{"spacing":{"blockGap":"4px"}}} -->
+<div class="wp-block-group wi-totals"><!-- wp:columns {"isStackedOnMobile":false} -->
+<div class="wp-block-columns is-not-stacked-on-mobile"><!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:paragraph {"align":"right"} -->
+<p class="has-text-align-right">Subtotal:</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"40%"} -->
+<div class="wp-block-column" style="flex-basis:40%"><!-- wp:wicked-invoicing/subtotal /--></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:columns {"isStackedOnMobile":false} -->
+<div class="wp-block-columns is-not-stacked-on-mobile"><!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:paragraph {"align":"right"} -->
+<p class="has-text-align-right">Discount:</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"40%"} -->
+<div class="wp-block-column" style="flex-basis:40%"><!-- wp:wicked-invoicing/total-discount-amount /--></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:columns {"isStackedOnMobile":false} -->
+<div class="wp-block-columns is-not-stacked-on-mobile"><!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:paragraph {"align":"right"} -->
+<p class="has-text-align-right">Tax:</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"40%"} -->
+<div class="wp-block-column" style="flex-basis:40%"><!-- wp:wicked-invoicing/tax-amount /--></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:separator {"opacity":"css"} -->
+<hr class="wp-block-separator has-css-opacity"/>
+<!-- /wp:separator -->
+
+<!-- wp:columns {"isStackedOnMobile":false} -->
+<div class="wp-block-columns is-not-stacked-on-mobile"><!-- wp:column {"width":"60%"} -->
+<div class="wp-block-column" style="flex-basis:60%"><!-- wp:paragraph {"align":"right","style":{"typography":{"fontWeight":"700"}}} -->
+<p class="has-text-align-right" style="font-weight:700">Total:</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:column -->
+
+<!-- wp:column {"width":"40%"} -->
+<div class="wp-block-column" style="flex-basis:40%"><!-- wp:wicked-invoicing/total /--></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:group {"className":"wi-amount-due","style":{"spacing":{"blockGap":"4px","margin":{"top":"12px"},"padding":{"top":"8px","bottom":"8px"}}}} -->
+<div class="wp-block-group wi-amount-due" style="margin-top:12px;padding-top:8px;padding-bottom:8px"></div>
+<!-- /wp:group --></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+
+<!-- wp:group {"className":"wi-payment-section","style":{"spacing":{"margin":{"top":"32px"},"blockGap":"12px"}}} -->
+<div class="wp-block-group wi-payment-section" style="margin-top:32px"></div>
+<!-- /wp:group --></div>
+<!-- /wp:group -->

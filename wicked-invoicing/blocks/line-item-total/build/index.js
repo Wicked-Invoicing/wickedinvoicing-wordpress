@@ -1,0 +1,1 @@
+(()=>{"use strict";const i=window.wp.blocks,e=(window.wp.i18n,window.wp.blockEditor),l=window.ReactJSXRuntime;(0,i.registerBlockType)("wicked-invoicing/line-item-total",{edit:function(){return(0,l.jsx)("div",{...(0,e.useBlockProps)({className:"wi-cell-chip"}),children:(0,l.jsx)("span",{className:"wi-cell-chip__label",children:"Total"})})},save:()=>null})})();

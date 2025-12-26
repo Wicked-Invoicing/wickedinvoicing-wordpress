@@ -1,0 +1,1 @@
+(()=>{"use strict";const i=window.wp.blocks,e=window.wp.i18n,n=window.wp.blockEditor,o=window.ReactJSXRuntime;(0,i.registerBlockType)("wicked-invoicing/due-date",{edit:function(){const i=(0,n.useBlockProps)();return(0,o.jsx)("div",{...i,children:(0,e.__)("Due Date","wicked-invoicing")})},save:()=>null})})();

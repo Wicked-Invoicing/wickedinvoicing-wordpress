@@ -1,0 +1,85 @@
+/* Wrapper for the button row */
+.wi-payment-buttons {
+	display: flex;
+	gap: 0.75rem;
+	margin-top: 1.5rem;
+	flex-wrap: wrap;
+}
+
+/* Alignment */
+.wi-payment-buttons.wi-button-align-left {
+	justify-content: flex-start;
+}
+.wi-payment-buttons.wi-button-align-center {
+	justify-content: center;
+}
+.wi-payment-buttons.wi-button-align-right {
+	justify-content: flex-end;
+}
+
+/* The actual button – use the existing Stripe button class */
+.wi-payment-buttons .wi-invoice-payment-buttons__btn,
+.wi-payment-buttons .wi-payment-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: 600;
+	padding: 0.6em 1.4em;
+	text-decoration: none;
+	border-width: 1px;
+	border-style: solid;
+	cursor: pointer;
+	line-height: 1.2;
+
+	background-color: var(--wi-btn-bg, var(--wp--preset--color--primary, #111827));
+	color: var(--wi-btn-text, #ffffff);
+	background-image: var(--wi-btn-gradient, none);
+	border-color: transparent;
+}
+
+/* Sizes */
+.wi-button-size-sm .wi-invoice-payment-buttons__btn,
+.wi-button-size-sm .wi-payment-button {
+	padding: 0.4em 1.0em;
+	font-size: 0.875rem;
+}
+.wi-button-size-md .wi-invoice-payment-buttons__btn,
+.wi-button-size-md .wi-payment-button {
+	padding: 0.6em 1.4em;
+	font-size: 1rem;
+}
+.wi-button-size-lg .wi-invoice-payment-buttons__btn,
+.wi-button-size-lg .wi-payment-button {
+	padding: 0.8em 1.8em;
+	font-size: 1.0625rem;
+}
+
+/* Shapes */
+.wi-button-shape-rounded .wi-invoice-payment-buttons__btn,
+.wi-button-shape-rounded .wi-payment-button {
+	border-radius: 4px;
+}
+.wi-button-shape-pill .wi-invoice-payment-buttons__btn,
+.wi-button-shape-pill .wi-payment-button {
+	border-radius: 999px;
+}
+.wi-button-shape-square .wi-invoice-payment-buttons__btn,
+.wi-button-shape-square .wi-payment-button {
+	border-radius: 0;
+}
+
+/* Variants */
+.wi-button-variant-outline .wi-invoice-payment-buttons__btn,
+.wi-button-variant-outline .wi-payment-button {
+	background-color: transparent;
+	background-image: none;
+	color: var(--wi-btn-bg, var(--wp--preset--color--primary, #111827));
+	border-color: currentColor;
+}
+
+.wi-button-variant-ghost .wi-invoice-payment-buttons__btn,
+.wi-button-variant-ghost .wi-payment-button {
+	background-color: transparent;
+	background-image: none;
+	border-color: transparent;
+}

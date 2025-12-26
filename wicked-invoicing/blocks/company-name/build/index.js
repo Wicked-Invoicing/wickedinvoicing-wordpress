@@ -1,0 +1,1 @@
+(()=>{"use strict";const i=window.wp.blocks,n=window.wp.i18n,e=window.wp.blockEditor,o=window.ReactJSXRuntime;(0,i.registerBlockType)("wicked-invoicing/company-name",{edit:function(){return(0,o.jsx)("div",{...(0,e.useBlockProps)(),className:"wi-company-name-placeholder",children:(0,n.__)("Company Name","wicked-invoicing")})},save:()=>null})})();
