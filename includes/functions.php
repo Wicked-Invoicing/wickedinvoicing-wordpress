@@ -40,7 +40,7 @@ if ( ! function_exists( 'wicked_inv_sanitize_number' ) ) {
 add_action(
 	'parse_query',
 	function ( $q ) {
-		if ( isset( $q->query_vars['wi_invoice_hash'] ) && $q->query_vars['wi_invoice_hash'] ) {
+		if ( isset( $q->query_vars['wicked_invoicing_invoice_hash'] ) && $q->query_vars['wicked_invoicing_invoice_hash'] ) {
 			$q->is_404  = false;
 			$q->is_home = false;
 		}
@@ -50,7 +50,7 @@ add_action(
 add_filter(
 	'pre_get_document_title',
 	function ( $title ) {
-		if ( get_query_var( 'wi_invoice_hash' ) ) {
+		if ( get_query_var( 'wicked_invoicing_invoice_hash' ) ) {
 			// You can use invoice title or a generic label.
 			return __( 'Invoice', 'wicked-invoicing' );
 		}

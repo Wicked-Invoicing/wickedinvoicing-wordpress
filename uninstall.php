@@ -59,9 +59,9 @@ function wicked_invoicing_uninstall_site() {
 	// ---------------------------------------------------------------------
 	$option_names = array(
 		'wicked_invoicing_settings',
-		'wicked_status_labels',
-		'wkd_invoice_slug',
-		'wicked_inv_active_bundles',
+		'wicked_invoicing_status_labels',
+		'wicked_invoicing_invoice_slug',
+		'wicked_invoicing_active_bundles',
 		'wicked_invoicing_notifications',
 		'wicked_invoicing_uninstall_behavior',
 	);
@@ -79,7 +79,7 @@ function wicked_invoicing_uninstall_site() {
 	}
 
 	if ( function_exists( 'delete_transient' ) ) {
-		delete_transient( 'wkd_notif_cron_lock' );
+		delete_transient( 'wicked_invoicing_notif_cron_lock' );
 	}
 
 	// ---------------------------------------------------------------------

@@ -1,11 +1,11 @@
 === Wicked Invoicing ===
-Contributors: elanasparkle
+Contributors: elanasparkle, wickedinvoicing
 Donate link: https://wickedinvoicing.com/features
-Tags: invoices, invoicing, billing, clients, payments
+Tags: invoicing, invoices, billing, invoice management, client invoices
 Requires at least: 6.0
 Tested up to: 6.9
 Requires PHP: 8.0
-Stable tag: 1.0.3
+Stable tag: 1.1.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -65,7 +65,7 @@ For general questions, documentation, and support links, visit:
 
 https://wickedinvoicing.com
 
-(If you set up a dedicated support site like `support.wickedinvoicing.com`, you can update this URL later.)
+You can also use the WordPress.org support forum for this plugin.
 
 = Can I use this on client sites? =
 
@@ -98,10 +98,18 @@ Admin UI source lives in /views/admin and production build output is in /views/a
 1. Invoice list screen in the WordPress admin.
 2. Invoice edit screen with line items and totals.
 3. Public-facing invoice view for your clients.
-
-(You’ll upload actual screenshot images to the `/assets/` directory in the plugin’s SVN repo later, but the text goes here.)
+4. Default Invoice block editor template.
 
 == Changelog ==
 
 = 1.0.0 =
 * Initial public release on WordPress.org.
+
+
+== Upgrade Notice ==
+
+= 1.0.5 =
+Inital Release.
+
+= 1.0.4 =
+WordPress review.

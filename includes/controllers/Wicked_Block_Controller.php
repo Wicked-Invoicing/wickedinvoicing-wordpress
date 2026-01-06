@@ -134,7 +134,7 @@ class Wicked_Block_Controller extends Wicked_Base_Controller {
 			return '';
 		}
 
-		$raw = $this->meta( $invoice_id, '_wi_billing_address', '' );
+		$raw = $this->meta( $invoice_id, '_wicked_invoicing_billing_address', '' );
 		if ( $raw === '' ) {
 			return '';
 		}
@@ -148,7 +148,7 @@ class Wicked_Block_Controller extends Wicked_Base_Controller {
 			return '';
 		}
 
-		$raw = $this->meta( $invoice_id, '_wi_shipping_address', '' );
+		$raw = $this->meta( $invoice_id, '_wicked_invoicing_shipping_address', '' );
 		if ( $raw === '' ) {
 			return '';
 		}
@@ -162,7 +162,7 @@ class Wicked_Block_Controller extends Wicked_Base_Controller {
 			return '';
 		}
 
-		$raw = $this->meta( $invoice_id, '_wi_client_address', '' );
+		$raw = $this->meta( $invoice_id, '_wicked_invoicing_client_address', '' );
 		if ( $raw === '' ) {
 			return '';
 		}
@@ -176,7 +176,7 @@ class Wicked_Block_Controller extends Wicked_Base_Controller {
 			return '';
 		}
 
-		$email = sanitize_email( $this->meta( $invoice_id, '_wi_client_email', '' ) );
+		$email = sanitize_email( $this->meta( $invoice_id, '_wicked_invoicing_client_email', '' ) );
 		if ( $email === '' ) {
 			return '';
 		}
@@ -190,7 +190,7 @@ class Wicked_Block_Controller extends Wicked_Base_Controller {
 			return '';
 		}
 
-		$name = sanitize_text_field( $this->meta( $invoice_id, '_wi_client_name', '' ) );
+		$name = sanitize_text_field( $this->meta( $invoice_id, '_wicked_invoicing_client_name', '' ) );
 		if ( $name === '' ) {
 			return '';
 		}
@@ -204,7 +204,7 @@ class Wicked_Block_Controller extends Wicked_Base_Controller {
 			return '';
 		}
 
-		$raw = $this->meta( $invoice_id, '_wi_notes', '' );
+		$raw = $this->meta( $invoice_id, '_wicked_invoicing_notes', '' );
 		if ( $raw === '' ) {
 			return '';
 		}
@@ -218,7 +218,7 @@ class Wicked_Block_Controller extends Wicked_Base_Controller {
 			return '';
 		}
 
-		$raw = $this->meta( $invoice_id, '_wi_terms_and_conditions', '' );
+		$raw = $this->meta( $invoice_id, '_wicked_invoicing_terms_and_conditions', '' );
 		if ( $raw === '' ) {
 			return '';
 		}
@@ -232,7 +232,7 @@ class Wicked_Block_Controller extends Wicked_Base_Controller {
 			return '';
 		}
 
-		$raw = sanitize_text_field( $this->meta( $invoice_id, '_wi_po_number', '' ) );
+		$raw = sanitize_text_field( $this->meta( $invoice_id, '_wicked_invoicing_po_number', '' ) );
 		if ( $raw === '' ) {
 			return '';
 		}
@@ -246,7 +246,7 @@ class Wicked_Block_Controller extends Wicked_Base_Controller {
 			return '';
 		}
 
-		$raw = sanitize_text_field( $this->meta( $invoice_id, '_wi_reference_number', '' ) );
+		$raw = sanitize_text_field( $this->meta( $invoice_id, '_wicked_invoicing_reference_number', '' ) );
 		if ( $raw === '' ) {
 			return '';
 		}
@@ -268,8 +268,8 @@ class Wicked_Block_Controller extends Wicked_Base_Controller {
 			return '';
 		}
 
-		// Use meta first (your meta list shows _wi_start_date)
-		$raw = $this->meta( $invoice_id, '_wi_start_date', '' );
+		// Use meta first (your meta list shows _wicked_invoicing_start_date)
+		$raw = $this->meta( $invoice_id, '_wicked_invoicing_start_date', '' );
 		if ( $raw === '' ) {
 			$raw = (string) get_post_field( 'post_date', $invoice_id );
 		}
@@ -288,7 +288,7 @@ class Wicked_Block_Controller extends Wicked_Base_Controller {
 			return '';
 		}
 
-		$raw = $this->meta( $invoice_id, '_wi_due_date', '' );
+		$raw = $this->meta( $invoice_id, '_wicked_invoicing_due_date', '' );
 		$ts  = $raw ? strtotime( $raw ) : false;
 		if ( ! $ts ) {
 			return '';
@@ -303,7 +303,7 @@ class Wicked_Block_Controller extends Wicked_Base_Controller {
 			return '';
 		}
 
-		$val = (float) $this->meta( $invoice_id, '_wi_subtotal', 0 );
+		$val = (float) $this->meta( $invoice_id, '_wicked_invoicing_subtotal', 0 );
 		return '<div class="wi-subtotal">' . esc_html( $this->money( $val ) ) . '</div>';
 	}
 
@@ -313,7 +313,7 @@ class Wicked_Block_Controller extends Wicked_Base_Controller {
 			return '';
 		}
 
-		$val = (float) $this->meta( $invoice_id, '_wi_tax_amount', 0 );
+		$val = (float) $this->meta( $invoice_id, '_wicked_invoicing_tax_amount', 0 );
 		return '<div class="wi-tax-amount">' . esc_html( $this->money( $val ) ) . '</div>';
 	}
 
@@ -323,7 +323,7 @@ class Wicked_Block_Controller extends Wicked_Base_Controller {
 			return '';
 		}
 
-		$val = (float) $this->meta( $invoice_id, '_wi_discount_amount', 0 );
+		$val = (float) $this->meta( $invoice_id, '_wicked_invoicing_discount_amount', 0 );
 		return '<div class="wi-total-discount">' . esc_html( $this->money( $val ) ) . '</div>';
 	}
 
@@ -333,7 +333,7 @@ class Wicked_Block_Controller extends Wicked_Base_Controller {
 			return '';
 		}
 
-		$val = (float) $this->meta( $invoice_id, '_wi_total', 0 );
+		$val = (float) $this->meta( $invoice_id, '_wicked_invoicing_total', 0 );
 		return '<div class="wi-total">' . esc_html( $this->money( $val ) ) . '</div>';
 	}
 
@@ -350,6 +350,91 @@ class Wicked_Block_Controller extends Wicked_Base_Controller {
 
 		return '<div class="wi-status">' . esc_html( $status ) . '</div>';
 	}
+
+	/**
+	 * Render: Invoice Payment block (server-rendered).
+	 *
+	 * @param array         $attributes Block attributes.
+	 * @param string        $content    Block content (unused; save() is null).
+	 * @param WP_Block|null $block      Block instance (context includes postId).
+	 * @return string
+	 */
+	public function render_invoice_payment_block( array $attributes, string $content, \WP_Block $block ): string {
+		$post_id = 0;
+
+		// Block context is preferred (your block.json usesContext: ["postId"])
+		if ( isset( $block->context['postId'] ) ) {
+			$post_id = (int) $block->context['postId'];
+		}
+
+		// Fallback (rare)
+		if ( ! $post_id && get_the_ID() ) {
+			$post_id = (int) get_the_ID();
+		}
+
+		if ( $post_id <= 0 ) {
+			return '';
+		}
+
+		// Attributes (match your block.json)
+		$variant = isset( $attributes['buttonVariant'] ) ? sanitize_key( (string) $attributes['buttonVariant'] ) : 'solid';
+		$shape   = isset( $attributes['buttonShape'] ) ? sanitize_key( (string) $attributes['buttonShape'] ) : 'rounded';
+		$size    = isset( $attributes['buttonSize'] ) ? sanitize_key( (string) $attributes['buttonSize'] ) : 'md';
+		$align   = isset( $attributes['buttonAlign'] ) ? sanitize_key( (string) $attributes['buttonAlign'] ) : 'right';
+
+		$classes = array(
+			'wi-payment-buttons',
+			'wi-button-variant-' . $variant,
+			'wi-button-shape-' . $shape,
+			'wi-button-size-' . $size,
+			'wi-button-align-' . $align,
+		);
+
+		// Optional CSS vars your stylesheet expects
+		$style_bits = array();
+
+		if ( ! empty( $attributes['buttonBgColor'] ) ) {
+			$style_bits[] = '--wi-btn-bg:' . sanitize_text_field( $attributes['buttonBgColor'] );
+		}
+		if ( ! empty( $attributes['buttonTextColor'] ) ) {
+			$style_bits[] = '--wi-btn-text:' . sanitize_text_field( $attributes['buttonTextColor'] );
+		}
+		if ( ! empty( $attributes['buttonGradient'] ) ) {
+			$style_bits[] = '--wi-btn-gradient:' . sanitize_text_field( $attributes['buttonGradient'] );
+		}
+
+		$style_attr = $style_bits ? ' style="' . esc_attr( implode( ';', $style_bits ) ) . '"' : '';
+
+		/**
+		 * IMPORTANT:
+		 * Whatever your block uses to fetch payment methods, keep it consistent.
+		 * If your old working code used a filter, keep using that same filter here.
+		 *
+		 * Example (common pattern):
+		 */
+		$methods = apply_filters( 'wicked_invoicing_invoice_payment_methods', array(), $post_id );
+
+		if ( empty( $methods ) || ! is_array( $methods ) ) {
+			return '';
+		}
+
+		$out = '<div class="' . esc_attr( implode( ' ', $classes ) ) . '"' . $style_attr . '>';
+
+		foreach ( $methods as $m ) {
+			if ( empty( $m['html'] ) ) {
+				continue;
+			}
+
+			// The method HTML should already be safe/controlled by your plugin.
+			$out .= $m['html'];
+		}
+
+		$out .= '</div>';
+
+		return $out;
+	}
+
+
 
 	/**
 	 * Company blocks (settings)

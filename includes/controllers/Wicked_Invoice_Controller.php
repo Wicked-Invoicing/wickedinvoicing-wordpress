@@ -95,10 +95,10 @@ class Wicked_Invoice_Controller extends Wicked_Base_Controller {
 	public function register_meta() {
 		// String-ish fields (single line)
 		$text_fields = array(
-			'_wi_client_name',
-			'_wi_payment_terms',
-			'_wi_po_number',
-			'_wi_reference_number',
+			'_wicked_invoicing_client_name',
+			'_wicked_invoicing_payment_terms',
+			'_wicked_invoicing_po_number',
+			'_wicked_invoicing_reference_number',
 		);
 		foreach ( $text_fields as $meta_key ) {
 			register_post_meta(
@@ -116,12 +116,12 @@ class Wicked_Invoice_Controller extends Wicked_Base_Controller {
 
 		// Multiline fields (addresses, notes, terms)
 		$textarea_fields = array(
-			'_wi_client_address',
-			'_wi_billing_address',
-			'_wi_shipping_address',
-			'_wi_notes',
-			'_wi_terms_and_conditions',
-			'_wi_footer_text',
+			'_wicked_invoicing_client_address',
+			'_wicked_invoicing_billing_address',
+			'_wicked_invoicing_shipping_address',
+			'_wicked_invoicing_notes',
+			'_wicked_invoicing_terms_and_conditions',
+			'_wicked_invoicing_footer_text',
 		);
 		foreach ( $textarea_fields as $meta_key ) {
 			register_post_meta(
@@ -140,7 +140,7 @@ class Wicked_Invoice_Controller extends Wicked_Base_Controller {
 		// Client email
 		register_post_meta(
 			self::CPT,
-			'_wi_client_email',
+			'_wicked_invoicing_client_email',
 			array(
 				'single'            => true,
 				'show_in_rest'      => true,
@@ -159,7 +159,7 @@ class Wicked_Invoice_Controller extends Wicked_Base_Controller {
 		if ( $subs_enabled ) {
 			register_post_meta(
 				self::CPT,
-				'_wi_sub_enabled',
+				'_wicked_invoicing_sub_enabled',
 				array(
 					'single'        => true,
 					'show_in_rest'  => true,
@@ -170,7 +170,7 @@ class Wicked_Invoice_Controller extends Wicked_Base_Controller {
 
 			register_post_meta(
 				self::CPT,
-				'_wi_sub_mode',
+				'_wicked_invoicing_sub_mode',
 				array(
 					'single'        => true,
 					'show_in_rest'  => true,
@@ -181,7 +181,7 @@ class Wicked_Invoice_Controller extends Wicked_Base_Controller {
 
 			register_post_meta(
 				self::CPT,
-				'_wi_sub_anchor_dom',
+				'_wicked_invoicing_sub_anchor_dom',
 				array(
 					'single'        => true,
 					'show_in_rest'  => true,
@@ -192,7 +192,7 @@ class Wicked_Invoice_Controller extends Wicked_Base_Controller {
 
 			register_post_meta(
 				self::CPT,
-				'_wi_sub_days',
+				'_wicked_invoicing_sub_days',
 				array(
 					'single'        => true,
 					'show_in_rest'  => true,
@@ -203,7 +203,7 @@ class Wicked_Invoice_Controller extends Wicked_Base_Controller {
 
 			register_post_meta(
 				self::CPT,
-				'_wi_sub_next_run',
+				'_wicked_invoicing_sub_next_run',
 				array(
 					'single'            => true,
 					'show_in_rest'      => true,
@@ -223,7 +223,7 @@ class Wicked_Invoice_Controller extends Wicked_Base_Controller {
 		// Client user id
 		register_post_meta(
 			self::CPT,
-			'_wkd_client_user_id',
+			'_wicked_invoicing_client_user_id',
 			array(
 				'show_in_rest'  => true,
 				'single'        => true,
@@ -233,7 +233,7 @@ class Wicked_Invoice_Controller extends Wicked_Base_Controller {
 		);
 
 		// Date fields (yyyy-mm-dd)
-		$date_fields = array( '_wi_start_date', '_wi_due_date' );
+		$date_fields = array( '_wicked_invoicing_start_date', '_wicked_invoicing_due_date' );
 		foreach ( $date_fields as $meta_key ) {
 			register_post_meta(
 				self::CPT,
@@ -250,11 +250,11 @@ class Wicked_Invoice_Controller extends Wicked_Base_Controller {
 
 		// Numeric fields
 		$number_fields = array(
-			'_wi_subtotal',
-			'_wi_tax_amount',
-			'_wi_discount_amount',
-			'_wi_total',
-			'_wi_paid',
+			'_wicked_invoicing_subtotal',
+			'_wicked_invoicing_tax_amount',
+			'_wicked_invoicing_discount_amount',
+			'_wicked_invoicing_total',
+			'_wicked_invoicing_paid',
 		);
 		foreach ( $number_fields as $meta_key ) {
 			register_post_meta(
@@ -273,7 +273,7 @@ class Wicked_Invoice_Controller extends Wicked_Base_Controller {
 		// Line items
 		register_post_meta(
 			self::CPT,
-			'_wi_line_items',
+			'_wicked_invoicing_line_items',
 			array(
 				'single'            => true,
 				'show_in_rest'      => array(
@@ -566,6 +566,18 @@ class Wicked_Invoice_Controller extends Wicked_Base_Controller {
 						),
 					),
 				),
+				// DELETE /invoices/{id}
+				array(
+					'methods'             => WP_REST_Server::DELETABLE,
+					'callback'            => array( $this, 'delete_invoice' ),
+					'permission_callback' => array( $this, 'can_delete_invoice' ),
+					'args'                => array(
+						'id' => array(
+							'type'     => 'integer',
+							'required' => true,
+						),
+					),
+				),
 				// PATCH /invoices/{id}
 				array(
 					'methods'             => WP_REST_Server::EDITABLE,
@@ -835,6 +847,16 @@ class Wicked_Invoice_Controller extends Wicked_Base_Controller {
 			'posts_per_page' => $per_page,
 		);
 
+		// - Users with view_all_invoices see every invoice.
+		// - Users with only view_own_invoices see only invoices they authored.
+		$can_view_all = self::user_has_cap( 'view_all_invoices' );
+		$can_view_own = self::user_has_cap( 'view_own_invoices' );
+
+		if ( ! $can_view_all && $can_view_own ) {
+			// Limit the query to invoices where this user is the post_author.
+			$query['author'] = get_current_user_id();
+		}
+
 		if ( ! empty( $args['search'] ) ) {
 			$query['s'] = sanitize_text_field( $args['search'] );
 		}
@@ -853,16 +875,16 @@ class Wicked_Invoice_Controller extends Wicked_Base_Controller {
 			case 'start_date':
 				$query['orderby']    = 'meta_value';
 				$query['order']      = $order;
-				$query['meta_key']   = '_wi_start_date';
+				$query['meta_key']   = '_wicked_invoicing_start_date';
 				$query['meta_type']  = 'DATE';
 				$query['meta_query'] = array(
 					'relation' => 'OR',
 					array(
-						'key'     => '_wi_start_date',
+						'key'     => '_wicked_invoicing_start_date',
 						'compare' => 'EXISTS',
 					),
 					array(
-						'key'     => '_wi_start_date',
+						'key'     => '_wicked_invoicing_start_date',
 						'compare' => 'NOT EXISTS',
 					),
 				);
@@ -871,16 +893,16 @@ class Wicked_Invoice_Controller extends Wicked_Base_Controller {
 			case 'due_date':
 				$query['orderby']    = 'meta_value';
 				$query['order']      = $order;
-				$query['meta_key']   = '_wi_due_date';
+				$query['meta_key']   = '_wicked_invoicing_due_date';
 				$query['meta_type']  = 'DATE';
 				$query['meta_query'] = array(
 					'relation' => 'OR',
 					array(
-						'key'     => '_wi_due_date',
+						'key'     => '_wicked_invoicing_due_date',
 						'compare' => 'EXISTS',
 					),
 					array(
-						'key'     => '_wi_due_date',
+						'key'     => '_wicked_invoicing_due_date',
 						'compare' => 'NOT EXISTS',
 					),
 				);
@@ -888,7 +910,7 @@ class Wicked_Invoice_Controller extends Wicked_Base_Controller {
 
 			case 'total':
 			case 'paid':
-				$key                 = ( $orderby === 'total' ) ? '_wi_total' : '_wi_paid';
+				$key                 = ( $orderby === 'total' ) ? '_wicked_invoicing_total' : '_wicked_invoicing_paid';
 				$query['orderby']    = 'meta_value_num';
 				$query['order']      = $order;
 				$query['meta_key']   = $key;
@@ -915,37 +937,37 @@ class Wicked_Invoice_Controller extends Wicked_Base_Controller {
 		$items = array_map(
 			function ( $post ) {
 				$id   = $post->ID;
-				$hash = (string) get_post_meta( $id, '_wi_hash', true );
+				$hash = (string) get_post_meta( $id, '_wicked_invoicing_hash', true );
 
-				$subtotal   = (float) get_post_meta( $id, '_wi_subtotal', true );
-				$tax_amount = (float) get_post_meta( $id, '_wi_tax_amount', true );
-				$discount   = (float) get_post_meta( $id, '_wi_discount_amount', true );
-				$total      = (float) get_post_meta( $id, '_wi_total', true );
-				$paid       = (float) get_post_meta( $id, '_wi_paid', true );
+				$subtotal   = (float) get_post_meta( $id, '_wicked_invoicing_subtotal', true );
+				$tax_amount = (float) get_post_meta( $id, '_wicked_invoicing_tax_amount', true );
+				$discount   = (float) get_post_meta( $id, '_wicked_invoicing_discount_amount', true );
+				$total      = (float) get_post_meta( $id, '_wicked_invoicing_total', true );
+				$paid       = (float) get_post_meta( $id, '_wicked_invoicing_paid', true );
 
-				$client_name    = (string) get_post_meta( $id, '_wi_client_name', true );
-				$client_user_id = (int) get_post_meta( $id, '_wkd_client_user_id', true );
+				$client_name    = (string) get_post_meta( $id, '_wicked_invoicing_client_name', true );
+				$client_user_id = (int) get_post_meta( $id, '_wicked_invoicing_client_user_id', true );
 				$company_name   = '';
 
 				if ( $client_user_id ) {
 						$company_name = get_user_meta( $client_user_id, 'company_name', true );
 					if ( '' === $company_name ) {
-						$company_name = get_user_meta( $client_user_id, '_wkd_company_name', true );
+						$company_name = get_user_meta( $client_user_id, '_wicked_invoicing_company_name', true );
 					}
 				}
 
-				$start_date = (string) ( get_post_meta( $id, '_wi_start_date', true ) ?: get_the_date( 'Y-m-d', $id ) );
-				$due_date   = (string) get_post_meta( $id, '_wi_due_date', true );
-				$po_number  = (string) get_post_meta( $id, '_wi_po_number', true );
-				$ref_number = (string) get_post_meta( $id, '_wi_reference_number', true );
-				$terms      = (string) get_post_meta( $id, '_wi_payment_terms', true );
+				$start_date = (string) ( get_post_meta( $id, '_wicked_invoicing_start_date', true ) ?: get_the_date( 'Y-m-d', $id ) );
+				$due_date   = (string) get_post_meta( $id, '_wicked_invoicing_due_date', true );
+				$po_number  = (string) get_post_meta( $id, '_wicked_invoicing_po_number', true );
+				$ref_number = (string) get_post_meta( $id, '_wicked_invoicing_reference_number', true );
+				$terms      = (string) get_post_meta( $id, '_wicked_invoicing_payment_terms', true );
 
-				$sub_enabled  = (bool) get_post_meta( $id, '_wi_sub_enabled', true );
-				$sub_days     = (int) get_post_meta( $id, '_wi_sub_days', true );
-				$sub_next_run = (string) get_post_meta( $id, '_wi_sub_next_run', true );
+				$sub_enabled  = (bool) get_post_meta( $id, '_wicked_invoicing_sub_enabled', true );
+				$sub_days     = (int) get_post_meta( $id, '_wicked_invoicing_sub_days', true );
+				$sub_next_run = (string) get_post_meta( $id, '_wicked_invoicing_sub_next_run', true );
 				$is_sub       = $sub_enabled || $sub_days > 0 || ! empty( $sub_next_run );
-				$mode         = (string) get_post_meta( $id, '_wi_sub_mode', true );
-				$anchor       = get_post_meta( $id, '_wi_sub_anchor_dom', true );
+				$mode         = (string) get_post_meta( $id, '_wicked_invoicing_sub_mode', true );
+				$anchor       = get_post_meta( $id, '_wicked_invoicing_sub_anchor_dom', true );
 
 				$view_url = $hash ? \Wicked_Invoicing\Controllers\Wicked_Template_Controller::get_invoice_url( $hash ) : '';
 
@@ -1010,7 +1032,7 @@ class Wicked_Invoice_Controller extends Wicked_Base_Controller {
 			return self::rest_error( 'not_found', __( 'Invoice not found', 'wicked-invoicing' ), 404 );
 		}
 
-		$hash     = get_post_meta( $id, '_wi_hash', true );
+		$hash     = get_post_meta( $id, '_wicked_invoicing_hash', true );
 		$view_url = $hash ? \Wicked_Invoicing\Controllers\Wicked_Template_Controller::get_invoice_url( $hash ) : '';
 
 		$data = array(
@@ -1021,37 +1043,37 @@ class Wicked_Invoice_Controller extends Wicked_Base_Controller {
 			'hash'                  => $hash,
 			'view_url'              => $view_url,
 
-			'client_name'           => get_post_meta( $id, '_wi_client_name', true ),
-			'client_user_id'        => (int) get_post_meta( $id, '_wkd_client_user_id', true ),
-			'client_email'          => get_post_meta( $id, '_wi_client_email', true ),
-			'client_address'        => get_post_meta( $id, '_wi_client_address', true ),
-			'billing_address'       => get_post_meta( $id, '_wi_billing_address', true ),
-			'shipping_address'      => get_post_meta( $id, '_wi_shipping_address', true ),
+			'client_name'           => get_post_meta( $id, '_wicked_invoicing_client_name', true ),
+			'client_user_id'        => (int) get_post_meta( $id, '_wicked_invoicing_client_user_id', true ),
+			'client_email'          => get_post_meta( $id, '_wicked_invoicing_client_email', true ),
+			'client_address'        => get_post_meta( $id, '_wicked_invoicing_client_address', true ),
+			'billing_address'       => get_post_meta( $id, '_wicked_invoicing_billing_address', true ),
+			'shipping_address'      => get_post_meta( $id, '_wicked_invoicing_shipping_address', true ),
 
-			'start_date'            => get_post_meta( $id, '_wi_start_date', true ) ?: get_the_date( 'Y-m-d', $id ),
-			'due_date'              => get_post_meta( $id, '_wi_due_date', true ),
-			'payment_terms'         => get_post_meta( $id, '_wi_payment_terms', true ),
-			'po_number'             => get_post_meta( $id, '_wi_po_number', true ),
-			'reference_number'      => get_post_meta( $id, '_wi_reference_number', true ),
+			'start_date'            => get_post_meta( $id, '_wicked_invoicing_start_date', true ) ?: get_the_date( 'Y-m-d', $id ),
+			'due_date'              => get_post_meta( $id, '_wicked_invoicing_due_date', true ),
+			'payment_terms'         => get_post_meta( $id, '_wicked_invoicing_payment_terms', true ),
+			'po_number'             => get_post_meta( $id, '_wicked_invoicing_po_number', true ),
+			'reference_number'      => get_post_meta( $id, '_wicked_invoicing_reference_number', true ),
 
-			'line_items'            => get_post_meta( $id, '_wi_line_items', true ),
-			'subtotal'              => (float) get_post_meta( $id, '_wi_subtotal', true ),
-			'tax_amount'            => (float) get_post_meta( $id, '_wi_tax_amount', true ),
-			'discount_amount'       => (float) get_post_meta( $id, '_wi_discount_amount', true ),
-			'total'                 => (float) get_post_meta( $id, '_wi_total', true ),
-			'paid'                  => (float) get_post_meta( $id, '_wi_paid', true ),
+			'line_items'            => get_post_meta( $id, '_wicked_invoicing_line_items', true ),
+			'subtotal'              => (float) get_post_meta( $id, '_wicked_invoicing_subtotal', true ),
+			'tax_amount'            => (float) get_post_meta( $id, '_wicked_invoicing_tax_amount', true ),
+			'discount_amount'       => (float) get_post_meta( $id, '_wicked_invoicing_discount_amount', true ),
+			'total'                 => (float) get_post_meta( $id, '_wicked_invoicing_total', true ),
+			'paid'                  => (float) get_post_meta( $id, '_wicked_invoicing_paid', true ),
 
-			'notes'                 => get_post_meta( $id, '_wi_notes', true ),
-			'terms_and_conditions'  => get_post_meta( $id, '_wi_terms_and_conditions', true ),
-			'footer_text'           => get_post_meta( $id, '_wi_footer_text', true ),
+			'notes'                 => get_post_meta( $id, '_wicked_invoicing_notes', true ),
+			'terms_and_conditions'  => get_post_meta( $id, '_wicked_invoicing_terms_and_conditions', true ),
+			'footer_text'           => get_post_meta( $id, '_wicked_invoicing_footer_text', true ),
 
-			'subscription_enabled'  => (bool) get_post_meta( $id, '_wi_sub_enabled', true ),
-			'subscription_days'     => (int) get_post_meta( $id, '_wi_sub_days', true ),
-			'subscription_next_run' => (string) get_post_meta( $id, '_wi_sub_next_run', true ),
+			'subscription_enabled'  => (bool) get_post_meta( $id, '_wicked_invoicing_sub_enabled', true ),
+			'subscription_days'     => (int) get_post_meta( $id, '_wicked_invoicing_sub_days', true ),
+			'subscription_next_run' => (string) get_post_meta( $id, '_wicked_invoicing_sub_next_run', true ),
 		);
 
-		$mode   = (string) get_post_meta( $id, '_wi_sub_mode', true );
-		$anchor = get_post_meta( $id, '_wi_sub_anchor_dom', true );
+		$mode   = (string) get_post_meta( $id, '_wicked_invoicing_sub_mode', true );
+		$anchor = get_post_meta( $id, '_wicked_invoicing_sub_anchor_dom', true );
 
 		$data['subscription_mode']       = ( $mode === 'anchor' ) ? 'anchor' : 'days';
 		$data['subscription_anchor_dom'] = ( $data['subscription_mode'] === 'anchor' && $anchor ) ? intval( $anchor ) : null;
@@ -1103,8 +1125,8 @@ class Wicked_Invoice_Controller extends Wicked_Base_Controller {
 
 		// Dates (defaults enforced)
 		list( $start, $due ) = $this->normalize_dates_for_save( $request );
-		update_post_meta( $post_id, '_wi_start_date', $start );
-		update_post_meta( $post_id, '_wi_due_date', $due );
+		update_post_meta( $post_id, '_wicked_invoicing_start_date', $start );
+		update_post_meta( $post_id, '_wicked_invoicing_due_date', $due );
 
 		// Subscription (explicit writes; do NOT include these in the generic map to avoid double-writing)
 		$sub_enabled = (bool) ( $params['subscription_enabled'] ?? false );
@@ -1118,41 +1140,41 @@ class Wicked_Invoice_Controller extends Wicked_Base_Controller {
 			$sub_next = $due ?: gmdate( 'Y-m-d', strtotime( $start . ' +30 days' ) );
 		}
 
-		update_post_meta( $post_id, '_wi_sub_enabled', $sub_enabled ? 1 : 0 );
-		update_post_meta( $post_id, '_wi_sub_days', $sub_days );
-		update_post_meta( $post_id, '_wi_sub_next_run', $sub_next );
+		update_post_meta( $post_id, '_wicked_invoicing_sub_enabled', $sub_enabled ? 1 : 0 );
+		update_post_meta( $post_id, '_wicked_invoicing_sub_days', $sub_days );
+		update_post_meta( $post_id, '_wicked_invoicing_sub_next_run', $sub_next );
 
 		$mode = isset( $params['subscription_mode'] ) ? (string) $params['subscription_mode'] : 'days';
 		$mode = in_array( $mode, array( 'days', 'anchor' ), true ) ? $mode : 'days';
-		update_post_meta( $post_id, '_wi_sub_mode', $mode );
+		update_post_meta( $post_id, '_wicked_invoicing_sub_mode', $mode );
 
 		$anchor = $params['subscription_anchor_dom'] ?? null;
 		$anchor = is_null( $anchor ) ? null : max( 1, min( 28, intval( $anchor ) ) );
 		if ( $mode === 'anchor' && $anchor ) {
-			update_post_meta( $post_id, '_wi_sub_anchor_dom', $anchor );
+			update_post_meta( $post_id, '_wicked_invoicing_sub_anchor_dom', $anchor );
 		} else {
-			delete_post_meta( $post_id, '_wi_sub_anchor_dom' );
+			delete_post_meta( $post_id, '_wicked_invoicing_sub_anchor_dom' );
 		}
 
 		// Generic meta map (everything else)
 		$map = array(
-			'client_name'          => '_wi_client_name',
-			'client_email'         => '_wi_client_email',
-			'client_user_id'       => '_wkd_client_user_id',
-			'client_address'       => '_wi_client_address',
-			'billing_address'      => '_wi_billing_address',
-			'shipping_address'     => '_wi_shipping_address',
-			'payment_terms'        => '_wi_payment_terms',
-			'po_number'            => '_wi_po_number',
-			'reference_number'     => '_wi_reference_number',
-			'line_items'           => '_wi_line_items',
-			'subtotal'             => '_wi_subtotal',
-			'tax_amount'           => '_wi_tax_amount',
-			'discount_amount'      => '_wi_discount_amount',
-			'total'                => '_wi_total',
-			'paid'                 => '_wi_paid',
-			'notes'                => '_wi_notes',
-			'terms_and_conditions' => '_wi_terms_and_conditions',
+			'client_name'          => '_wicked_invoicing_client_name',
+			'client_email'         => '_wicked_invoicing_client_email',
+			'client_user_id'       => '_wicked_invoicing_client_user_id',
+			'client_address'       => '_wicked_invoicing_client_address',
+			'billing_address'      => '_wicked_invoicing_billing_address',
+			'shipping_address'     => '_wicked_invoicing_shipping_address',
+			'payment_terms'        => '_wicked_invoicing_payment_terms',
+			'po_number'            => '_wicked_invoicing_po_number',
+			'reference_number'     => '_wicked_invoicing_reference_number',
+			'line_items'           => '_wicked_invoicing_line_items',
+			'subtotal'             => '_wicked_invoicing_subtotal',
+			'tax_amount'           => '_wicked_invoicing_tax_amount',
+			'discount_amount'      => '_wicked_invoicing_discount_amount',
+			'total'                => '_wicked_invoicing_total',
+			'paid'                 => '_wicked_invoicing_paid',
+			'notes'                => '_wicked_invoicing_notes',
+			'terms_and_conditions' => '_wicked_invoicing_terms_and_conditions',
 		);
 
 		foreach ( $map as $param => $meta_key ) {
@@ -1178,6 +1200,92 @@ class Wicked_Invoice_Controller extends Wicked_Base_Controller {
 		}
 		$result = $this->list_invoices( $request->get_params() );
 		return rest_ensure_response( $result );
+	}
+
+	/**
+	 * Permission: can trash an invoice (Full Access only).
+	 *
+	 * @param WP_REST_Request $request
+	 * @return bool
+	 */
+	public function can_delete_invoice( WP_REST_Request $request ) {
+		$id = absint( $request->get_param( 'id' ) );
+		if ( ! $id ) {
+			return false;
+		}
+
+		$post = get_post( $id );
+		if ( ! $post || $post->post_type !== self::CPT ) {
+			return false;
+		}
+
+		// Full Access only (your Security tab checkbox).
+		if ( ! Wicked_Base_Controller::user_has_cap( 'manage_wicked_invoicing' ) ) {
+			return false;
+		}
+
+		// WordPress native capability check as defense-in-depth.
+		return current_user_can( 'delete_post', $id );
+	}
+
+	/**
+	 * Trash an invoice.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Response|\WP_Error
+	 */
+	public function delete_invoice( WP_REST_Request $request ) {
+		$id = absint( $request->get_param( 'id' ) );
+		if ( ! $id ) {
+			return new \WP_Error(
+				'invalid_invoice_id',
+				__( 'Invalid invoice ID.', 'wicked-invoicing' ),
+				array( 'status' => 400 )
+			);
+		}
+
+		$post = get_post( $id );
+		if ( ! $post || $post->post_type !== self::CPT ) {
+			return new \WP_Error(
+				'invalid_invoice',
+				__( 'Invoice not found.', 'wicked-invoicing' ),
+				array( 'status' => 404 )
+			);
+		}
+
+		if ( ! current_user_can( 'delete_post', $id ) ) {
+			return new \WP_Error(
+				'forbidden',
+				__( 'You do not have permission to delete this invoice.', 'wicked-invoicing' ),
+				array( 'status' => 403 )
+			);
+		}
+
+		$trashed = wp_trash_post( $id );
+		if ( ! $trashed ) {
+			return new \WP_Error(
+				'trash_failed',
+				__( 'Unable to move invoice to Trash.', 'wicked-invoicing' ),
+				array( 'status' => 500 )
+			);
+		}
+
+		do_action(
+			'wicked_invoicing_info',
+			'[Wicked Invoice] delete_invoice trashed',
+			array(
+				'invoice_id' => $id,
+				'user_id'    => get_current_user_id(),
+			)
+		);
+
+		return rest_ensure_response(
+			array(
+				'success' => true,
+				'id'      => $id,
+				'status'  => 'trash',
+			)
+		);
 	}
 
 	/**
@@ -1218,23 +1326,23 @@ class Wicked_Invoice_Controller extends Wicked_Base_Controller {
 		}
 
 		// Dates (never empty)
-		$existing_start      = get_post_meta( $id, '_wi_start_date', true );
+		$existing_start      = get_post_meta( $id, '_wicked_invoicing_start_date', true );
 		list( $start, $due ) = $this->normalize_dates_for_save( $request, $existing_start );
-		update_post_meta( $id, '_wi_start_date', $start );
-		update_post_meta( $id, '_wi_due_date', $due );
+		update_post_meta( $id, '_wicked_invoicing_start_date', $start );
+		update_post_meta( $id, '_wicked_invoicing_due_date', $due );
 
 		// Subscription defaults on update
 		$sub_enabled = array_key_exists( 'subscription_enabled', $params )
 			? (bool) $params['subscription_enabled']
-			: (bool) get_post_meta( $id, '_wi_sub_enabled', true );
+			: (bool) get_post_meta( $id, '_wicked_invoicing_sub_enabled', true );
 
 		$sub_days = array_key_exists( 'subscription_days', $params )
 			? (int) $params['subscription_days']
-			: (int) get_post_meta( $id, '_wi_sub_days', true );
+			: (int) get_post_meta( $id, '_wicked_invoicing_sub_days', true );
 
 		$sub_next = array_key_exists( 'subscription_next_run', $params )
 			? (string) $params['subscription_next_run']
-			: (string) get_post_meta( $id, '_wi_sub_next_run', true );
+			: (string) get_post_meta( $id, '_wicked_invoicing_sub_next_run', true );
 
 		if ( $sub_enabled && $sub_days <= 0 ) {
 			$sub_days = 30;
@@ -1243,16 +1351,16 @@ class Wicked_Invoice_Controller extends Wicked_Base_Controller {
 			$sub_next = $due ?: gmdate( 'Y-m-d', strtotime( $start . ' +30 days' ) );
 		}
 
-		update_post_meta( $id, '_wi_sub_enabled', $sub_enabled ? 1 : 0 );
-		update_post_meta( $id, '_wi_sub_days', $sub_days );
-		update_post_meta( $id, '_wi_sub_next_run', $sub_next );
+		update_post_meta( $id, '_wicked_invoicing_sub_enabled', $sub_enabled ? 1 : 0 );
+		update_post_meta( $id, '_wicked_invoicing_sub_days', $sub_days );
+		update_post_meta( $id, '_wicked_invoicing_sub_next_run', $sub_next );
 
 		// subscription mode + anchor
 		$mode = null;
 		if ( array_key_exists( 'subscription_mode', $params ) ) {
 			$mode = (string) $params['subscription_mode'];
 			$mode = in_array( $mode, array( 'days', 'anchor' ), true ) ? $mode : 'days';
-			update_post_meta( $id, '_wi_sub_mode', $mode );
+			update_post_meta( $id, '_wicked_invoicing_sub_mode', $mode );
 		}
 
 		$anchor = $params['subscription_anchor_dom'] ?? null;
@@ -1260,37 +1368,37 @@ class Wicked_Invoice_Controller extends Wicked_Base_Controller {
 			if ( $anchor !== null ) {
 				$anchor = max( 1, min( 28, intval( $anchor ) ) );
 			} else {
-				$anchor = intval( get_post_meta( $id, '_wi_sub_anchor_dom', true ) );
+				$anchor = intval( get_post_meta( $id, '_wicked_invoicing_sub_anchor_dom', true ) );
 				$anchor = ( $anchor >= 1 && $anchor <= 28 ) ? $anchor : null;
 			}
 
-			$effective_mode = $mode ?? (string) get_post_meta( $id, '_wi_sub_mode', true );
+			$effective_mode = $mode ?? (string) get_post_meta( $id, '_wicked_invoicing_sub_mode', true );
 			if ( $effective_mode === 'anchor' && $anchor ) {
-				update_post_meta( $id, '_wi_sub_anchor_dom', $anchor );
+				update_post_meta( $id, '_wicked_invoicing_sub_anchor_dom', $anchor );
 			} else {
-				delete_post_meta( $id, '_wi_sub_anchor_dom' );
+				delete_post_meta( $id, '_wicked_invoicing_sub_anchor_dom' );
 			}
 		}
 
 		// Generic meta map (exclude subscription_* to avoid double-writing)
 		$map = array(
-			'client_name'          => '_wi_client_name',
-			'client_email'         => '_wi_client_email',
-			'client_user_id'       => '_wkd_client_user_id',
-			'client_address'       => '_wi_client_address',
-			'billing_address'      => '_wi_billing_address',
-			'shipping_address'     => '_wi_shipping_address',
-			'payment_terms'        => '_wi_payment_terms',
-			'po_number'            => '_wi_po_number',
-			'reference_number'     => '_wi_reference_number',
-			'line_items'           => '_wi_line_items',
-			'subtotal'             => '_wi_subtotal',
-			'tax_amount'           => '_wi_tax_amount',
-			'discount_amount'      => '_wi_discount_amount',
-			'total'                => '_wi_total',
-			'paid'                 => '_wi_paid',
-			'notes'                => '_wi_notes',
-			'terms_and_conditions' => '_wi_terms_and_conditions',
+			'client_name'          => '_wicked_invoicing_client_name',
+			'client_email'         => '_wicked_invoicing_client_email',
+			'client_user_id'       => '_wicked_invoicing_client_user_id',
+			'client_address'       => '_wicked_invoicing_client_address',
+			'billing_address'      => '_wicked_invoicing_billing_address',
+			'shipping_address'     => '_wicked_invoicing_shipping_address',
+			'payment_terms'        => '_wicked_invoicing_payment_terms',
+			'po_number'            => '_wicked_invoicing_po_number',
+			'reference_number'     => '_wicked_invoicing_reference_number',
+			'line_items'           => '_wicked_invoicing_line_items',
+			'subtotal'             => '_wicked_invoicing_subtotal',
+			'tax_amount'           => '_wicked_invoicing_tax_amount',
+			'discount_amount'      => '_wicked_invoicing_discount_amount',
+			'total'                => '_wicked_invoicing_total',
+			'paid'                 => '_wicked_invoicing_paid',
+			'notes'                => '_wicked_invoicing_notes',
+			'terms_and_conditions' => '_wicked_invoicing_terms_and_conditions',
 		);
 
 		foreach ( $map as $param => $meta_key ) {
@@ -1360,31 +1468,31 @@ class Wicked_Invoice_Controller extends Wicked_Base_Controller {
 		$src_author = (int) $src->post_author;
 
 		$src_meta = array(
-			'client_name'          => get_post_meta( $source_id, '_wi_client_name', true ),
-			'client_email'         => get_post_meta( $source_id, '_wi_client_email', true ),
-			'client_user_id'       => get_post_meta( $source_id, '_wkd_client_user_id', true ),
-			'client_address'       => get_post_meta( $source_id, '_wi_client_address', true ),
-			'billing_address'      => get_post_meta( $source_id, '_wi_billing_address', true ),
-			'shipping_address'     => get_post_meta( $source_id, '_wi_shipping_address', true ),
-			'start_date'           => get_post_meta( $source_id, '_wi_start_date', true ) ?: get_the_date( 'Y-m-d', $source_id ),
-			'due_date'             => get_post_meta( $source_id, '_wi_due_date', true ),
-			'payment_terms'        => get_post_meta( $source_id, '_wi_payment_terms', true ),
-			'po_number'            => get_post_meta( $source_id, '_wi_po_number', true ),
-			'reference_number'     => get_post_meta( $source_id, '_wi_reference_number', true ),
-			'line_items'           => get_post_meta( $source_id, '_wi_line_items', true ),
-			'subtotal'             => (float) get_post_meta( $source_id, '_wi_subtotal', true ),
-			'tax_amount'           => (float) get_post_meta( $source_id, '_wi_tax_amount', true ),
-			'discount_amount'      => (float) get_post_meta( $source_id, '_wi_discount_amount', true ),
-			'total'                => (float) get_post_meta( $source_id, '_wi_total', true ),
-			'paid'                 => (float) get_post_meta( $source_id, '_wi_paid', true ),
-			'notes'                => get_post_meta( $source_id, '_wi_notes', true ),
-			'terms_and_conditions' => get_post_meta( $source_id, '_wi_terms_and_conditions', true ),
+			'client_name'          => get_post_meta( $source_id, '_wicked_invoicing_client_name', true ),
+			'client_email'         => get_post_meta( $source_id, '_wicked_invoicing_client_email', true ),
+			'client_user_id'       => get_post_meta( $source_id, '_wicked_invoicing_client_user_id', true ),
+			'client_address'       => get_post_meta( $source_id, '_wicked_invoicing_client_address', true ),
+			'billing_address'      => get_post_meta( $source_id, '_wicked_invoicing_billing_address', true ),
+			'shipping_address'     => get_post_meta( $source_id, '_wicked_invoicing_shipping_address', true ),
+			'start_date'           => get_post_meta( $source_id, '_wicked_invoicing_start_date', true ) ?: get_the_date( 'Y-m-d', $source_id ),
+			'due_date'             => get_post_meta( $source_id, '_wicked_invoicing_due_date', true ),
+			'payment_terms'        => get_post_meta( $source_id, '_wicked_invoicing_payment_terms', true ),
+			'po_number'            => get_post_meta( $source_id, '_wicked_invoicing_po_number', true ),
+			'reference_number'     => get_post_meta( $source_id, '_wicked_invoicing_reference_number', true ),
+			'line_items'           => get_post_meta( $source_id, '_wicked_invoicing_line_items', true ),
+			'subtotal'             => (float) get_post_meta( $source_id, '_wicked_invoicing_subtotal', true ),
+			'tax_amount'           => (float) get_post_meta( $source_id, '_wicked_invoicing_tax_amount', true ),
+			'discount_amount'      => (float) get_post_meta( $source_id, '_wicked_invoicing_discount_amount', true ),
+			'total'                => (float) get_post_meta( $source_id, '_wicked_invoicing_total', true ),
+			'paid'                 => (float) get_post_meta( $source_id, '_wicked_invoicing_paid', true ),
+			'notes'                => get_post_meta( $source_id, '_wicked_invoicing_notes', true ),
+			'terms_and_conditions' => get_post_meta( $source_id, '_wicked_invoicing_terms_and_conditions', true ),
 
-			'sub_enabled'          => (bool) get_post_meta( $source_id, '_wi_sub_enabled', true ),
-			'sub_days'             => (int) get_post_meta( $source_id, '_wi_sub_days', true ),
-			'sub_next_run'         => (string) get_post_meta( $source_id, '_wi_sub_next_run', true ),
-			'sub_mode'             => (string) get_post_meta( $source_id, '_wi_sub_mode', true ),
-			'sub_anchor_dom'       => get_post_meta( $source_id, '_wi_sub_anchor_dom', true ),
+			'sub_enabled'          => (bool) get_post_meta( $source_id, '_wicked_invoicing_sub_enabled', true ),
+			'sub_days'             => (int) get_post_meta( $source_id, '_wicked_invoicing_sub_days', true ),
+			'sub_next_run'         => (string) get_post_meta( $source_id, '_wicked_invoicing_sub_next_run', true ),
+			'sub_mode'             => (string) get_post_meta( $source_id, '_wicked_invoicing_sub_mode', true ),
+			'sub_anchor_dom'       => get_post_meta( $source_id, '_wicked_invoicing_sub_anchor_dom', true ),
 		);
 
 		$new_title = ( isset( $overrides['title'] ) && $overrides['title'] !== null )
@@ -1440,34 +1548,34 @@ class Wicked_Invoice_Controller extends Wicked_Base_Controller {
 			)
 		);
 
-		update_post_meta( $new_id, '_wi_start_date', $new_start );
-		update_post_meta( $new_id, '_wi_due_date', $new_due );
+		update_post_meta( $new_id, '_wicked_invoicing_start_date', $new_start );
+		update_post_meta( $new_id, '_wicked_invoicing_due_date', $new_due );
 
 		// Copy meta
 		$meta_map = array(
-			'client_name'          => '_wi_client_name',
-			'client_email'         => '_wi_client_email',
-			'client_user_id'       => '_wkd_client_user_id',
-			'client_address'       => '_wi_client_address',
-			'billing_address'      => '_wi_billing_address',
-			'shipping_address'     => '_wi_shipping_address',
-			'payment_terms'        => '_wi_payment_terms',
-			'po_number'            => '_wi_po_number',
-			'reference_number'     => '_wi_reference_number',
-			'line_items'           => '_wi_line_items',
-			'subtotal'             => '_wi_subtotal',
-			'tax_amount'           => '_wi_tax_amount',
-			'discount_amount'      => '_wi_discount_amount',
-			'total'                => '_wi_total',
-			'paid'                 => '_wi_paid',
-			'notes'                => '_wi_notes',
-			'terms_and_conditions' => '_wi_terms_and_conditions',
+			'client_name'          => '_wicked_invoicing_client_name',
+			'client_email'         => '_wicked_invoicing_client_email',
+			'client_user_id'       => '_wicked_invoicing_client_user_id',
+			'client_address'       => '_wicked_invoicing_client_address',
+			'billing_address'      => '_wicked_invoicing_billing_address',
+			'shipping_address'     => '_wicked_invoicing_shipping_address',
+			'payment_terms'        => '_wicked_invoicing_payment_terms',
+			'po_number'            => '_wicked_invoicing_po_number',
+			'reference_number'     => '_wicked_invoicing_reference_number',
+			'line_items'           => '_wicked_invoicing_line_items',
+			'subtotal'             => '_wicked_invoicing_subtotal',
+			'tax_amount'           => '_wicked_invoicing_tax_amount',
+			'discount_amount'      => '_wicked_invoicing_discount_amount',
+			'total'                => '_wicked_invoicing_total',
+			'paid'                 => '_wicked_invoicing_paid',
+			'notes'                => '_wicked_invoicing_notes',
+			'terms_and_conditions' => '_wicked_invoicing_terms_and_conditions',
 
-			'sub_enabled'          => '_wi_sub_enabled',
-			'sub_days'             => '_wi_sub_days',
-			'sub_next_run'         => '_wi_sub_next_run',
-			'sub_mode'             => '_wi_sub_mode',
-			'sub_anchor_dom'       => '_wi_sub_anchor_dom',
+			'sub_enabled'          => '_wicked_invoicing_sub_enabled',
+			'sub_days'             => '_wicked_invoicing_sub_days',
+			'sub_next_run'         => '_wicked_invoicing_sub_next_run',
+			'sub_mode'             => '_wicked_invoicing_sub_mode',
+			'sub_anchor_dom'       => '_wicked_invoicing_sub_anchor_dom',
 		);
 
 		foreach ( $meta_map as $src_key => $meta_key ) {
@@ -1592,7 +1700,7 @@ class Wicked_Invoice_Controller extends Wicked_Base_Controller {
 		}
 
 		if ( $slug === '' ) {
-			$slug = get_option( 'wkd_invoice_slug', 'invoice' );
+			$slug = get_option( 'wicked_invoicing_invoice_slug', 'invoice' );
 		}
 
 		return trim( (string) $slug, '/' );

@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Wicked_Settings_Controller extends Wicked_Base_Controller {
 
 	const OPTION_KEY       = 'wicked_invoicing_settings';
-	const STATUS_LABEL_OPT = 'wicked_status_labels';
+	const STATUS_LABEL_OPT = 'wicked_invoicing_status_labels';
 
 	/**
 	 * Hook into init and rest_api_init.

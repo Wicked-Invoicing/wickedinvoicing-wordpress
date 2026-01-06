@@ -15,10 +15,10 @@ class Wicked_Notifications_Controller extends Wicked_Base_Controller {
 
 	/** Cron hook + schedule slug */
 	const CRON_HOOK     = 'wicked_invoicing_notifications_cron';
-	const CRON_SCHEDULE = 'wkd_five_minutes';
+	const CRON_SCHEDULE = 'wicked_invoicing_five_minutes';
 
 	/** Meta prefix for “sent” markers to dedupe */
-	const META_SENT_PREFIX = '_wi_notif_sent_';
+	const META_SENT_PREFIX = '_wicked_invoicing_notif_sent_';
 
 	/** admin-post action for "Send test" */
 	const ADMIN_POST_TEST = 'wicked_invoicing_send_test';
@@ -46,7 +46,7 @@ class Wicked_Notifications_Controller extends Wicked_Base_Controller {
 		add_action( 'rest_api_init', array( __CLASS__, 'register_routes' ) );
 
 		// admin action callback
-		add_action( 'admin_post_wi_resend_notifications', array( __CLASS__, 'handle_resend_notifications' ) );
+		add_action( 'admin_post_wicked_invoicing_resend_notifications', array( __CLASS__, 'handle_resend_notifications' ) );
 
 		add_action(
 			'wicked_invoicing_Invoice_created',
@@ -196,13 +196,17 @@ class Wicked_Notifications_Controller extends Wicked_Base_Controller {
 			wp_die( esc_html__( 'Forbidden', 'wicked-invoicing' ), 403 );
 		}
 
-		// Nonce check: expects ?_wpnonce=... in the request
-		check_admin_referer( 'wi_resend_notifications' );
+		check_admin_referer( 'wicked_invoicing_resend_notifications' );
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Nonce verified via check_admin_referer() above.
+		$post_id = isset( $_GET['post_id'] ) ? absint( wp_unslash( $_GET['post_id'] ) ) : 0;
 
-		$post_id = isset( $_GET['post_id'] ) ? absint( $_GET['post_id'] ) : 0;
 		if ( ! $post_id ) {
 			wp_safe_redirect( admin_url( 'admin.php?page=wicked-invoicing-notifications' ) );
 			exit;
+		}
+
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			wp_die( esc_html__( 'Forbidden', 'wicked-invoicing' ), 403 );
 		}
 
 		$post = get_post( $post_id );
@@ -222,6 +226,7 @@ class Wicked_Notifications_Controller extends Wicked_Base_Controller {
 		wp_safe_redirect( $redirect ? $redirect : admin_url( 'edit.php?post_type=' . urlencode( $post->post_type ) ) );
 		exit;
 	}
+
 
 
 	/** Legacy → rules[] fallback (supports your current UI while you move) */
@@ -411,11 +416,17 @@ class Wicked_Notifications_Controller extends Wicked_Base_Controller {
 		if ( ! is_user_logged_in() ) {
 			wp_die( esc_html__( 'You must be logged in to send a test.', 'wicked-invoicing' ), 403 );
 		}
-		check_admin_referer( 'wkd_notif_test' );
 
-		$rule_id    = sanitize_key( $_POST['rule_id'] ?? '' );
-		$legacy     = sanitize_key( $_POST['rule'] ?? '' ); // 'sent'|'paid'
-		$invoice_id = absint( $_POST['invoice_id'] ?? 0 );
+		check_admin_referer( 'wicked_invoicing_notif_test' );
+
+		// Restrict to users who can manage Wicked Invoicing or site options.
+		if ( ! Wicked_Base_Controller::user_has_cap( 'manage_wicked_invoicing' ) && ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You do not have permission to send test emails.', 'wicked-invoicing' ), 403 );
+		}
+
+		$rule_id    = sanitize_key( wp_unslash( $_POST['rule_id'] ?? '' ) );
+		$legacy     = sanitize_key( wp_unslash( $_POST['rule'] ?? '' ) );
+		$invoice_id = absint( wp_unslash( $_POST['invoice_id'] ?? 0 ) );
 		$redirect = '';
 		if ( isset( $_POST['redirect_to'] ) ) {
 			$redirect = esc_url_raw( wp_unslash( $_POST['redirect_to'] ) );
@@ -520,7 +531,7 @@ class Wicked_Notifications_Controller extends Wicked_Base_Controller {
 		$back         = $redirect ?: wp_get_referer() ?: $default_back;
 		$back         = add_query_arg(
 			array(
-				'wkd_test' => $ok ? '1' : '0',
+				'wicked_invoicing_test' => $ok ? '1' : '0',
 				'rule'     => ( $rule['id'] ?? 'n/a' ),
 			),
 			$back
@@ -609,7 +620,7 @@ class Wicked_Notifications_Controller extends Wicked_Base_Controller {
 
 	public static function cron_worker() {
 		// basic overlap lock
-		$lock_key = 'wkd_notif_cron_lock';
+		$lock_key = 'wicked_invoicing_notif_cron_lock';
 		if ( get_transient( $lock_key ) ) {
 			return;
 		}
@@ -687,10 +698,10 @@ class Wicked_Notifications_Controller extends Wicked_Base_Controller {
 		if ( $date_field === 'post_date' ) {
 			$base_ts = strtotime( (string) get_post_field( 'post_date', $post_id ) );
 		} elseif ( $date_field === 'due_date' ) {
-			$val     = get_post_meta( $post_id, '_wi_due_date', true ) ?: get_post_meta( $post_id, 'due_date', true );
+			$val     = get_post_meta( $post_id, '_wicked_invoicing_due_date', true ) ?: get_post_meta( $post_id, 'due_date', true );
 			$base_ts = $val ? strtotime( (string) $val ) : 0;
 		} else { // start_date
-			$val     = get_post_meta( $post_id, '_wi_start_date', true ) ?: get_post_meta( $post_id, 'start_date', true );
+			$val     = get_post_meta( $post_id, '_wicked_invoicing_start_date', true ) ?: get_post_meta( $post_id, 'start_date', true );
 			$base_ts = $val ? strtotime( (string) $val ) : 0;
 		}
 		if ( ! $base_ts ) {
@@ -797,10 +808,10 @@ class Wicked_Notifications_Controller extends Wicked_Base_Controller {
 		$keys = apply_filters(
 			'wicked_invoicing_client_email_meta_keys',
 			array(
-				'email' => '_wi_client_email',
-				'cc'    => '_wi_client_cc',
-				'bcc'   => '_wi_client_bcc',
-				'user'  => '_wkd_client_user_id',
+				'email' => '_wicked_invoicing_client_email',
+				'cc'    => '_wicked_invoicing_client_cc',
+				'bcc'   => '_wicked_invoicing_client_bcc',
+				'user'  => '_wicked_invoicing_client_user_id',
 			),
 			$invoice_id
 		);
@@ -816,8 +827,8 @@ class Wicked_Notifications_Controller extends Wicked_Base_Controller {
 				if ( $u && is_email( $u->user_email ) ) {
 					$to = $u->user_email;
 				}
-				$user_cc  = get_user_meta( $uid, 'wi_cc', true );
-				$user_bcc = get_user_meta( $uid, 'wi_bcc', true );
+				$user_cc  = get_user_meta( $uid, 'wicked_invoicing_cc', true );
+				$user_bcc = get_user_meta( $uid, 'wicked_invoicing_bcc', true );
 				$cc       = $cc ?: $user_cc;
 				$bcc      = $bcc ?: $user_bcc;
 			}
@@ -875,11 +886,11 @@ class Wicked_Notifications_Controller extends Wicked_Base_Controller {
 			: (array) get_option( 'wicked_invoicing_settings', array() );
 
 		$slug     = $settings['invoice_slug'] ?? $settings['url_invoice_slug'] ?? 'wicked-invoice';
-		$hash     = get_post_meta( $post_id, '_wi_hash', true );
+		$hash     = get_post_meta( $post_id, '_wicked_invoicing_hash', true );
 		$view_url = $view_url = $hash ? \Wicked_Invoicing\Controllers\Wicked_Template_Controller::get_invoice_url( $hash ) : '';
 
-		$total = (float) get_post_meta( $post_id, '_wi_total', true );
-		$paid  = (float) get_post_meta( $post_id, '_wi_paid', true );
+		$total = (float) get_post_meta( $post_id, '_wicked_invoicing_total', true );
+		$paid  = (float) get_post_meta( $post_id, '_wicked_invoicing_paid', true );
 
 		$status_slug  = (string) $post->post_status;
 		$status_label = \Wicked_Invoicing\Controllers\Wicked_Base_Controller::get_status_label( $status_slug );

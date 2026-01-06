@@ -111,29 +111,24 @@ class Wicked_Admin_Bar_Controller extends Wicked_Base_Controller {
 	 * @return string
 	 */
 	protected function get_invoice_edit_url( int $invoice_id ): string {
-		return admin_url( 'admin.php?page=wicked-invoicing-invoices#/invoice-edit?invoice_id=' . $invoice_id );
-	}
+			return admin_url( 'admin.php?page=wicked-invoicing-invoices#/invoice-edit?invoice_id=' . $invoice_id );
+		}
 
-	/**
-	 * Detect invoice ID on the front-end invoice view.
-	 *
-	 * @return int Invoice ID or 0.
-	 */
-	protected function detect_invoice_id_from_request(): int {
+		protected function detect_invoice_id_from_request(): int {
 		// Only for front-end.
 		if ( is_admin() ) {
 			return 0;
 		}
 
-		$hash = (string) get_query_var( 'wi_invoice_hash', '' );
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading a public query arg; no state change.
-		if ( '' === $hash && isset( $_GET['wi_invoice_hash'] ) ) {
-			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading a view param, not processing a form action.
-			$hash = sanitize_text_field( wp_unslash( $_GET['wi_invoice_hash'] ) );
-		}
+		$hash = (string) get_query_var( 'wicked_invoicing_invoice_hash', '' );
 
 		$hash = trim( (string) $hash );
 		if ( '' === $hash ) {
+			return 0;
+		}
+
+		// Validate hash format (32-char hex or UUID) to avoid unnecessary queries on malformed input.
+		if ( ! preg_match( '/^[a-f0-9]{32}$/i', $hash ) && ! preg_match( '/^[a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i', $hash ) ) {
 			return 0;
 		}
 
@@ -142,7 +137,7 @@ class Wicked_Admin_Bar_Controller extends Wicked_Base_Controller {
 				'post_type'        => Wicked_Invoice_Controller::get_cpt_slug(),
 				'post_status'      => array( 'temp', 'pending', 'deposit-required', 'deposit-paid', 'paid' ),
 				'numberposts'      => 1,
-				'meta_key'         => '_wi_hash',
+				'meta_key'         => '_wicked_invoicing_hash',
 				'meta_value'       => $hash,
 			)
 		);
@@ -165,4 +160,5 @@ class Wicked_Admin_Bar_Controller extends Wicked_Base_Controller {
 
 		return $invoice_id;
 	}
+
 }
