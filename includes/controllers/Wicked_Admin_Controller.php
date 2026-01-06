@@ -307,11 +307,13 @@ class Wicked_Admin_Controller extends Wicked_Base_Controller {
 			$settings        = get_option( 'wicked_invoicing_settings', array() );
 			$invoice_slug    = sanitize_key( $settings['invoice_slug'] ?? 'wicked-invoicing' );
 			$caps_list       = array( 'manage_wicked_invoicing', 'edit_wicked_settings', 'edit_wicked_invoices', 'view_all_invoices', 'view_own_invoices' );
+			// Build the front-end capabilities list from the Wicked role matrix
+			// (user_has_cap) instead of raw WP role caps (current_user_can).
 			$user_caps       = array_values(
 				array_filter(
 					array_map(
 						function ( $c ) {
-							return current_user_can( $c ) ? $c : false;
+							return self::user_has_cap( $c ) ? $c : false;
 						},
 						$caps_list
 					)
@@ -343,11 +345,11 @@ class Wicked_Admin_Controller extends Wicked_Base_Controller {
 					'statuses'          => $statuses_map,
 					'notificationsUrl'  => admin_url( 'admin.php?page=wicked-invoicing-notifications' ),
 					'adminPostUrl'      => admin_url( 'admin-post.php' ),
-					'notifTestNonce'    => wp_create_nonce( 'wkd_notif_test' ),
+					'notifTestNonce'    => wp_create_nonce( 'wicked_invoicing_notif_test' ),
 					'notifTestAction'   => \Wicked_Invoicing\Controllers\Wicked_Notifications_Controller::ADMIN_POST_TEST,
 					'proUpsellUrl'      => $is_pro_active ? '' : 'https://wickedinvoicing.com/features',
 					'hasLicense'        => (bool) apply_filters( 'wicked_invoicing_has_valid_license', ( defined( 'WICKED_INVOICING_PRO' ) && WICKED_INVOICING_PRO ) || class_exists( \Wicked_Invoicing_Pro::class ) ),
-					'activeBundles'     => get_option( 'wicked_inv_active_bundles', array() ),
+					'activeBundles'     => get_option( 'wicked_invoicing_active_bundles', array() ),
 				)
 			);
 
@@ -415,9 +417,11 @@ class Wicked_Admin_Controller extends Wicked_Base_Controller {
 	public function render_dashboard_page() {
 		echo '<div id="wicked-invoicing-admin-app" class="wicked-invoicing-admin"></div>';
 
+		$desired = '#/dashboard';
+
 		wp_add_inline_script(
 			'wicked-invoicing-admin-react',
-			'if(!location.hash){location.hash="#/dashboard";}',
+			'(function(){var desired=' . wp_json_encode( $desired ) . ';if(location.hash!==desired){location.hash=desired;}})();',
 			'after'
 		);
 	}
@@ -467,9 +471,11 @@ class Wicked_Admin_Controller extends Wicked_Base_Controller {
 	public function render_settings_page() {
 		echo '<div id="wicked-invoicing-admin-app" class="wicked-invoicing-admin"></div>';
 
+		$desired = '#/settings';
+
 		wp_add_inline_script(
 			'wicked-invoicing-admin-react',
-			'if(!location.hash){location.hash="#/settings";}',
+			'(function(){var desired=' . wp_json_encode( $desired ) . ';if(location.hash!==desired){location.hash=desired;}})();',
 			'after'
 		);
 	}
@@ -477,9 +483,11 @@ class Wicked_Admin_Controller extends Wicked_Base_Controller {
 	public function render_notifications_page() {
 		echo '<div id="wicked-invoicing-admin-app" class="wicked-invoicing-admin"></div>';
 
+		$desired = '#/notifications';
+
 		wp_add_inline_script(
 			'wicked-invoicing-admin-react',
-			'if(!location.hash){location.hash="#/notifications";}',
+			'(function(){var desired=' . wp_json_encode( $desired ) . ';if(location.hash!==desired){location.hash=desired;}})();',
 			'after'
 		);
 	}
@@ -487,9 +495,11 @@ class Wicked_Admin_Controller extends Wicked_Base_Controller {
 	public function render_addons_page() {
 		echo '<div id="wicked-invoicing-admin-app" class="wicked-invoicing-admin"></div>';
 
+		$desired = '#/add-ons';
+
 		wp_add_inline_script(
 			'wicked-invoicing-admin-react',
-			'if(!location.hash){location.hash="#/add-ons";}',
+			'(function(){var desired=' . wp_json_encode( $desired ) . ';if(location.hash!==desired){location.hash=desired;}})();',
 			'after'
 		);
 	}
@@ -497,19 +507,24 @@ class Wicked_Admin_Controller extends Wicked_Base_Controller {
 	public function render_security_page() {
 		echo '<div id="wicked-invoicing-admin-app" class="wicked-invoicing-admin"></div>';
 
+		$desired = '#/security';
+
 		wp_add_inline_script(
 			'wicked-invoicing-admin-react',
-			'if(!location.hash){location.hash="#/security";}',
+			'(function(){var desired=' . wp_json_encode( $desired ) . ';if(location.hash!==desired){location.hash=desired;}})();',
 			'after'
 		);
 	}
 
+
 	public function render_support_page() {
 		echo '<div id="wicked-invoicing-admin-app" class="wicked-invoicing-admin"></div>';
 
+		$desired = '#/support';
+
 		wp_add_inline_script(
 			'wicked-invoicing-admin-react',
-			'if(!location.hash){location.hash="#/support";}',
+			'(function(){var desired=' . wp_json_encode( $desired ) . ';if(location.hash!==desired){location.hash=desired;}})();',
 			'after'
 		);
 	}
@@ -517,9 +532,11 @@ class Wicked_Admin_Controller extends Wicked_Base_Controller {
 	public function render_logs_page() {
 		echo '<div id="wicked-invoicing-admin-app" class="wicked-invoicing-admin"></div>';
 
+		$desired = '#/logs';
+
 		wp_add_inline_script(
 			'wicked-invoicing-admin-react',
-			'if(!location.hash){location.hash="#/logs";}',
+			'(function(){var desired=' . wp_json_encode( $desired ) . ';if(location.hash!==desired){location.hash=desired;}})();',
 			'after'
 		);
 	}

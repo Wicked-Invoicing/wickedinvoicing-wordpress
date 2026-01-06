@@ -4,7 +4,7 @@
  * Plugin Name: Wicked Invoicing
  * Plugin URI: https://wickedinvoicing.com
  * Description: Simple invoicing and billing for WordPress.
- * Version: 1.0.3
+ * Version: 1.1.3
  * Requires at least: 6.0
  * Requires PHP: 8.0
  * Author: Wicked Invoicing
@@ -43,7 +43,7 @@ require_once WICKED_INV_PLUGIN_PATH . 'includes/controllers/Wicked_Line_Items.ph
 add_action(
 	'init',
 	function () {
-		// Logging first so other controllers' do_action('wkd_*') gets captured
+		// Logging first so other controllers' do_action('wicked_invoicing_*') gets captured
 		new \Wicked_Invoicing\Controllers\Wicked_Log_Controller();
 
 		// Core

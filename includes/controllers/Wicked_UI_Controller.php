@@ -18,12 +18,12 @@ class Wicked_UI_Controller extends Wicked_Base_Controller {
 	const REST_NS = 'wicked-invoicing/v1';
 
 	// Invoice Edit meta keys
-	const META_ORDER = '_wi_layout_invoice_order';
-	const META_SPANS = '_wi_layout_invoice_spans';
+	const META_ORDER = '_wicked_invoicing_layout_invoice_order';
+	const META_SPANS = '_wicked_invoicing_layout_invoice_spans';
 
 	// Per-screen meta keys for table columns
-	const META_TABLE_ORDER_PREFIX  = '_wi_table_order_';
-	const META_TABLE_HIDDEN_PREFIX = '_wi_table_hidden_';
+	const META_TABLE_ORDER_PREFIX  = '_wicked_invoicing_table_order_';
+	const META_TABLE_HIDDEN_PREFIX = '_wicked_invoicing_table_hidden_';
 
 	public function __construct() {
 		add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
@@ -141,7 +141,7 @@ class Wicked_UI_Controller extends Wicked_Base_Controller {
 		}
 
 		return new WP_Error(
-			'wi_forbidden',
+			'wicked_invoicing_forbidden',
 			__( 'You do not have permission to customize Wicked Invoicing UI.', 'wicked-invoicing' ),
 			array( 'status' => 403 )
 		);

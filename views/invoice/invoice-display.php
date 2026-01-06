@@ -26,10 +26,10 @@ function wicked_invoicing_render_invoice_display_template(): void {
 	// -----------------------------------------------------------------------------
 	// 1. Resolve invoice by hash (public + temp for privileged users)
 	// -----------------------------------------------------------------------------
-	$wi_hash = get_query_var( 'wi_invoice_hash' );
-	$wi_hash = is_string( $wi_hash ) ? trim( $wi_hash ) : '';
+	$wicked_invoicing_hash = get_query_var( 'wicked_invoicing_invoice_hash' );
+	$wicked_invoicing_hash = is_string( $wicked_invoicing_hash ) ? trim( $wicked_invoicing_hash ) : '';
 
-	if ( '' === $wi_hash ) {
+	if ( '' === $wicked_invoicing_hash ) {
 		status_header( 404 );
 		echo esc_html__( 'Invoice not found.', 'wicked-invoicing' );
 		return;
@@ -38,45 +38,45 @@ function wicked_invoicing_render_invoice_display_template(): void {
 	$invoice_cpt_slug = Wicked_Controller::get( 'invoice' )->get_cpt_slug();
 
 	// Public statuses only.
-	$wi_public_statuses = array( 'pending', 'deposit-paid', 'paid' );
+	$wicked_invoicing_public_statuses = array( 'pending', 'deposit-paid', 'paid' );
 
-	$wi_invoice_posts = get_posts(
+	$wicked_invoicing_invoice_posts = get_posts(
 		array(
 			'post_type'   => $invoice_cpt_slug,
-			'meta_key'    => '_wi_hash',
-			'meta_value'  => $wi_hash,
-			'post_status' => $wi_public_statuses,
+			'meta_key'    => '_wicked_invoicing_hash',
+			'meta_value'  => $wicked_invoicing_hash,
+			'post_status' => $wicked_invoicing_public_statuses,
 			'numberposts' => 1,
 		)
 	);
 
 	// If not found and user can view temp, allow temp lookup.
 	if (
-		empty( $wi_invoice_posts )
+		empty( $wicked_invoicing_invoice_posts )
 		&& ( current_user_can( 'manage_wicked_invoicing' ) || current_user_can( 'edit_wicked_invoices' ) )
 	) {
-		$wi_invoice_posts = get_posts(
+		$wicked_invoicing_invoice_posts = get_posts(
 			array(
 				'post_type'   => $invoice_cpt_slug,
-				'meta_key'    => '_wi_hash',
-				'meta_value'  => $wi_hash,
+				'meta_key'    => '_wicked_invoicing_hash',
+				'meta_value'  => $wicked_invoicing_hash,
 				'post_status' => array( 'temp' ),
 				'numberposts' => 1,
 			)
 		);
 	}
 
-	if ( empty( $wi_invoice_posts ) ) {
+	if ( empty( $wicked_invoicing_invoice_posts ) ) {
 		status_header( 404 );
 		echo esc_html__( 'Invoice not found.', 'wicked-invoicing' );
 		return;
 	}
 
-	$wi_invoice = $wi_invoice_posts[0];
+	$wicked_invoicing_invoice = $wicked_invoicing_invoice_posts[0];
 
 	// Hard safety: never show temp publicly.
 	if (
-		'temp' === $wi_invoice->post_status
+		'temp' === $wicked_invoicing_invoice->post_status
 		&& ! ( current_user_can( 'manage_wicked_invoicing' ) || current_user_can( 'edit_wicked_invoices' ) )
 	) {
 		status_header( 404 );
@@ -87,14 +87,14 @@ function wicked_invoicing_render_invoice_display_template(): void {
 	// -----------------------------------------------------------------------------
 	// 2. Load template page (Wicked Invoice Template)
 	// -----------------------------------------------------------------------------
-	$wi_settings = get_option( 'wicked_invoicing_settings', array() );
-	$wi_settings = is_array( $wi_settings ) ? $wi_settings : array();
+	$wicked_invoicing_settings = get_option( 'wicked_invoicing_settings', array() );
+	$wicked_invoicing_settings = is_array( $wicked_invoicing_settings ) ? $wicked_invoicing_settings : array();
 
-	$wi_template_id   = absint( $wi_settings['invoice_template_id'] ?? 0 );
-	$wi_template_page = $wi_template_id ? get_post( $wi_template_id ) : null;
+	$wicked_invoicing_template_id   = absint( $wicked_invoicing_settings['invoice_template_id'] ?? 0 );
+	$wicked_invoicing_template_page = $wicked_invoicing_template_id ? get_post( $wicked_invoicing_template_id ) : null;
 
-	if ( ! $wi_template_page ) {
-		$wi_template_q = new \WP_Query(
+	if ( ! $wicked_invoicing_template_page ) {
+		$wicked_invoicing_template_q = new \WP_Query(
 			array(
 				'post_type'      => 'page',
 				'title'          => 'Wicked Invoice Template',
@@ -103,45 +103,45 @@ function wicked_invoicing_render_invoice_display_template(): void {
 			)
 		);
 
-		$wi_template_page = $wi_template_q->have_posts() ? $wi_template_q->posts[0] : null;
+		$wicked_invoicing_template_page = $wicked_invoicing_template_q->have_posts() ? $wicked_invoicing_template_q->posts[0] : null;
 		wp_reset_postdata();
 	}
 
-	if ( ! $wi_template_page ) {
+	if ( ! $wicked_invoicing_template_page ) {
 		wp_die( esc_html__( 'Invoice template missing.', 'wicked-invoicing' ) );
 	}
 
-	$wi_max_width = get_post_meta( $wi_template_page->ID, '_wi_template_max_width', true );
-	$wi_max_width = $wi_max_width ? $wi_max_width : ( $wi_settings['invoice_template_width'] ?? '100%' );
+	$wicked_invoicing_max_width = get_post_meta( $wicked_invoicing_template_page->ID, '_wicked_invoicing_template_max_width', true );
+	$wicked_invoicing_max_width = $wicked_invoicing_max_width ? $wicked_invoicing_max_width : ( $wicked_invoicing_settings['invoice_template_width'] ?? '100%' );
 
-	$wi_hide_title = (bool) get_post_meta( $wi_template_page->ID, '_wi_hide_title', true );
+	$wicked_invoicing_hide_title = (bool) get_post_meta( $wicked_invoicing_template_page->ID, '_wicked_invoicing_hide_title', true );
 
 	// -----------------------------------------------------------------------------
 	// 3. Hijack global $post so blocks (and invoice field blocks) render correctly
 	// -----------------------------------------------------------------------------
 	global $post;
-	$wi_old_post = $post;
-	$post        = $wi_invoice;
+	$wicked_invoicing_old_post = $post;
+	$post                      = $wicked_invoicing_invoice;
 	setup_postdata( $post );
 
 	// -----------------------------------------------------------------------------
 	// 4. Decide whether to use site header/footer
 	// -----------------------------------------------------------------------------
-	$wi_meta_wrapper = get_post_meta( $wi_template_page->ID, '_wi_use_theme_wrapper', true );
+	$wicked_invoicing_meta_wrapper = get_post_meta( $wicked_invoicing_template_page->ID, '_wicked_invoicing_use_theme_wrapper', true );
 
-	if ( '' !== $wi_meta_wrapper ) {
-		$wi_use_theme_wrapper = (bool) $wi_meta_wrapper;
+	if ( '' !== $wicked_invoicing_meta_wrapper ) {
+		$wicked_invoicing_use_theme_wrapper = (bool) $wicked_invoicing_meta_wrapper;
 	} else {
-		$wi_use_theme_wrapper = ! empty( $wi_settings['use_theme_wrapper'] );
+		$wicked_invoicing_use_theme_wrapper = ! empty( $wicked_invoicing_settings['use_theme_wrapper'] );
 	}
 
-	$wi_is_block_theme = function_exists( 'wp_is_block_theme' ) && wp_is_block_theme();
+	$wicked_invoicing_is_block_theme = function_exists( 'wp_is_block_theme' ) && wp_is_block_theme();
 
 	// -----------------------------------------------------------------------------
 	// 5. Open wrapper (theme or bare)
 	// -----------------------------------------------------------------------------
-	if ( $wi_use_theme_wrapper ) {
-		if ( $wi_is_block_theme ) {
+	if ( $wicked_invoicing_use_theme_wrapper ) {
+		if ( $wicked_invoicing_is_block_theme ) {
 			?>
 			<!DOCTYPE html>
 			<html <?php language_attributes(); ?>>
@@ -152,6 +152,16 @@ function wicked_invoicing_render_invoice_display_template(): void {
 			</head>
 			<body <?php body_class( 'wi-invoice-body' ); ?>>
 			<?php
+			if ( function_exists( 'wp_body_open' ) ) {
+				wp_body_open();
+			}
+
+			// Render the theme's header template part in block themes.
+			if ( function_exists( 'block_template_part' ) ) {
+				block_template_part( 'header' );
+			} elseif ( function_exists( 'wp_template_part' ) ) {
+				wp_template_part( 'header' );
+			}
 		} else {
 			get_header();
 		}
@@ -162,22 +172,27 @@ function wicked_invoicing_render_invoice_display_template(): void {
 		<head>
 			<meta charset="<?php bloginfo( 'charset' ); ?>">
 			<meta name="viewport" content="width=device-width, initial-scale=1">
+			<meta name="theme-color" content="#000">
+			<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 			<?php wp_head(); ?>
 		</head>
 		<body <?php body_class( 'wi-invoice-body' ); ?>>
 		<?php
+		if ( function_exists( 'wp_body_open' ) ) {
+			wp_body_open();
+		}
 	}
 
 	?>
-	<div class="wi-invoice-container" style="width:100%; max-width:<?php echo esc_attr( $wi_max_width ); ?>; margin:0 auto;">
-		<?php if ( ! $wi_hide_title ) : ?>
-			<h1 class="wi-template-title"><?php echo esc_html( $wi_template_page->post_title ); ?></h1>
+	<div class="wi-invoice-container" style="width:100%; max-width:<?php echo esc_attr( $wicked_invoicing_max_width ); ?>; margin:0 auto;">
+		<?php if ( ! $wicked_invoicing_hide_title ) : ?>
+			<h1 class="wi-template-title"><?php echo esc_html( $wicked_invoicing_template_page->post_title ); ?></h1>
 		<?php endif; ?>
 
 		<div class="wicked-invoice-content">
 			<?php
 			// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Core WP hook.
-			echo wp_kses_post( apply_filters( 'the_content', $wi_template_page->post_content ) );
+			echo wp_kses_post( apply_filters( 'the_content', $wicked_invoicing_template_page->post_content ) );
 			?>
 		</div>
 	</div>
@@ -186,8 +201,15 @@ function wicked_invoicing_render_invoice_display_template(): void {
 	// -----------------------------------------------------------------------------
 	// 6. Close wrapper & restore global $post
 	// -----------------------------------------------------------------------------
-	if ( $wi_use_theme_wrapper ) {
-		if ( $wi_is_block_theme ) {
+	if ( $wicked_invoicing_use_theme_wrapper ) {
+		if ( $wicked_invoicing_is_block_theme ) {
+			// Render the theme's footer template part in block themes.
+			if ( function_exists( 'block_template_part' ) ) {
+				block_template_part( 'footer' );
+			} elseif ( function_exists( 'wp_template_part' ) ) {
+				wp_template_part( 'footer' );
+			}
+
 			wp_footer();
 			?>
 			</body>
@@ -205,7 +227,7 @@ function wicked_invoicing_render_invoice_display_template(): void {
 	}
 
 	wp_reset_postdata();
-	$post = $wi_old_post;
+	$post = $wicked_invoicing_old_post;
 }
 
 wicked_invoicing_render_invoice_display_template();

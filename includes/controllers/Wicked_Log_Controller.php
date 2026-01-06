@@ -68,7 +68,7 @@ class Wicked_Log_Controller extends Wicked_Base_Controller {
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_logs' ),
-					'permission_callback' => fn() => current_user_can( 'manage_wicked_invoicing' ),
+					'permission_callback' => fn() => self::user_has_cap( 'manage_wicked_invoicing' ) || current_user_can( 'manage_wicked_invoicing' ),
 					'args'                => array(
 						'page'     => array(
 							'type'    => 'integer',
@@ -83,7 +83,7 @@ class Wicked_Log_Controller extends Wicked_Base_Controller {
 				array(
 					'methods'             => WP_REST_Server::DELETABLE,
 					'callback'            => array( $this, 'clear_logs' ),
-					'permission_callback' => fn() => current_user_can( 'manage_wicked_invoicing' ),
+					'permission_callback' => fn() => self::user_has_cap( 'manage_wicked_invoicing' ) || current_user_can( 'manage_wicked_invoicing' ),
 				),
 			)
 		);

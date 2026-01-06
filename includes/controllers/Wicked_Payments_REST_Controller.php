@@ -121,7 +121,7 @@ class Wicked_Payments_REST_Controller extends Wicked_Base_Controller {
 	public function get_items( WP_REST_Request $request ) {
 		if ( ! function_exists( 'wicked_invoicing_payments' ) ) {
 			return new WP_Error(
-				'wi_payments_missing',
+				'wicked_invoicing_payments_missing',
 				__( 'Payments controller is not available.', 'wicked-invoicing' ),
 				array( 'status' => 500 )
 			);
@@ -131,7 +131,7 @@ class Wicked_Payments_REST_Controller extends Wicked_Base_Controller {
 
 		if ( ! $payments_controller || ! method_exists( $payments_controller, 'list_payments' ) ) {
 			return new WP_Error(
-				'wi_payments_method_missing',
+				'wicked_invoicing_payments_method_missing',
 				__( 'Payments controller does not implement list_payments().', 'wicked-invoicing' ),
 				array( 'status' => 500 )
 			);

@@ -15,7 +15,7 @@ function wicked_inv_current_invoice_id(): int {
 		return (int) $post->ID;
 	}
 
-	foreach ( array( 'wi_invoice_id', 'invoice_id', 'inv_id', 'invoice' ) as $qv ) {
+	foreach ( array( 'wicked_invoicing_invoice_id', 'invoice_id', 'inv_id', 'invoice' ) as $qv ) {
 		$val = get_query_var( $qv );
 		if ( $val && (int) $val > 0 ) {
 			return (int) $val;
@@ -29,9 +29,9 @@ function wicked_inv_current_invoice_id(): int {
 	return 0;
 }
 
-/** Fetch line items array from post meta `_wi_line_items` */
+/** Fetch line items array from post meta `_wicked_invoicing_line_items` */
 function wicked_inv_get_line_items( int $invoice_id ): array {
-	$items = get_post_meta( $invoice_id, '_wi_line_items', true );
+	$items = get_post_meta( $invoice_id, '_wicked_invoicing_line_items', true );
 
 	if ( is_string( $items ) ) {
 		$decoded = json_decode( $items, true );

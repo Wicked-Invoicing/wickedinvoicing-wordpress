@@ -20,7 +20,7 @@ class WI_Invoice {
 	/** Custom Post Type slug */
 	const CPT = 'wicked_invoice';
 	/** Meta key for the public hash */
-	const META_HASH = '_wi_hash';
+	const META_HASH = '_wicked_invoicing_hash';
 
 	public function get_by_hash( string $hash ): ?\WP_Post {
 		$hash  = sanitize_text_field( $hash );
@@ -58,7 +58,7 @@ class WI_Invoice {
 	}
 
 	public function is_invoice_request(): bool {
-		$hash = get_query_var( 'wi_invoice_hash' );
+		$hash = get_query_var( 'wicked_invoicing_invoice_hash' );
 		return is_string( $hash ) && strlen( trim( $hash ) ) === 32;
 	}
 

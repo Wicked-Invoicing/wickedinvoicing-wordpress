@@ -20,10 +20,10 @@ class Wicked_Dashboard_Controller extends Wicked_Base_Controller {
 	const NS  = 'wicked-invoicing/v1';
 	const CPT = 'wicked_invoice';
 
-	private const DATE_META  = '_wi_start_date';
-	private const META_TOTAL = '_wi_total';
-	private const META_PAID  = '_wi_paid';
-	private const META_DUE   = '_wi_due_date';
+	private const DATE_META  = '_wicked_invoicing_start_date';
+	private const META_TOTAL = '_wicked_invoicing_total';
+	private const META_PAID  = '_wicked_invoicing_paid';
+	private const META_DUE   = '_wicked_invoicing_due_date';
 
 	public function __construct() {
 		add_action( 'rest_api_init', array( __CLASS__, 'register_routes' ) );
@@ -422,14 +422,39 @@ class Wicked_Dashboard_Controller extends Wicked_Base_Controller {
 
 			if ( ! is_wp_error( $res ) && method_exists( $res, 'get_data' ) ) {
 				$rows = $res->get_data();
+
 				if ( is_array( $rows ) ) {
 					foreach ( $rows as $r ) {
-						$ts      = isset( $r['log_date'] ) ? strtotime( (string) $r['log_date'] ) : (int) ( $r['ts'] ?? 0 );
+						$ts = 0;
+
+						// Preferred: explicit log_date (string/datetime).
+						if ( isset( $r['log_date'] ) && is_string( $r['log_date'] ) && $r['log_date'] !== '' ) {
+							$parsed = strtotime( $r['log_date'] );
+							$ts     = $parsed ? (int) $parsed : 0;
+						}
+
+						// Fallback: numeric ts.
+						if ( $ts <= 0 && isset( $r['ts'] ) ) {
+							$ts = (int) $r['ts'];
+						}
+
+						// Fallback: iso date field.
+						if ( $ts <= 0 && isset( $r['date'] ) && is_string( $r['date'] ) && $r['date'] !== '' ) {
+							$parsed = strtotime( $r['date'] );
+							$ts     = $parsed ? (int) $parsed : 0;
+						}
+
+						// If we still don't have a real timestamp, skip this log row.
+						// This prevents 1970/1969 from ever showing up.
+						if ( $ts <= 0 ) {
+							continue;
+						}
+
 						$items[] = array(
 							'type'    => 'log',
 							'level'   => strtolower( (string) ( $r['level'] ?? 'info' ) ),
 							'message' => $r['message'] ?? '',
-							'date'    => isset( $r['log_date'] ) ? wp_date( 'c', $ts ) : ( $r['date'] ?? wp_date( 'c', $ts ) ),
+							'date'    => wp_date( 'c', $ts ),
 							'ts'      => $ts,
 							'data'    => $r['data'] ?? null,
 						);
@@ -437,6 +462,7 @@ class Wicked_Dashboard_Controller extends Wicked_Base_Controller {
 				}
 			}
 		}
+
 
 		usort( $items, fn( $a, $b ) => ( $b['ts'] ?? 0 ) <=> ( $a['ts'] ?? 0 ) );
 

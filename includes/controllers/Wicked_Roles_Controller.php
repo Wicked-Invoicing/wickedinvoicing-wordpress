@@ -13,6 +13,9 @@ class Wicked_Roles_Controller extends Wicked_Base_Controller {
 
 	public function __construct() {
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
+
+		// Redirect Wicked-specific roles on login without affecting core roles.
+		add_filter( 'login_redirect', array( $this, 'login_redirect' ), 10, 3 );
 	}
 
 	public function register_routes() {
@@ -22,7 +25,7 @@ class Wicked_Roles_Controller extends Wicked_Base_Controller {
 			array(
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => array( $this, 'get_role_caps' ),
-				'permission_callback' => fn() => current_user_can( 'manage_wicked_invoicing' ),
+            	'permission_callback' => array( $this, 'can_manage_security' ),
 			)
 		);
 
@@ -32,7 +35,7 @@ class Wicked_Roles_Controller extends Wicked_Base_Controller {
 			array(
 				'methods'             => WP_REST_Server::EDITABLE, // PATCH/PUT/POST
 				'callback'            => array( $this, 'update_security_settings' ),
-				'permission_callback' => fn() => current_user_can( 'manage_wicked_invoicing' ),
+            	'permission_callback' => array( $this, 'can_manage_security' ),
 				'args'                => array(
 					'super_admin' => array(
 						'type'     => 'integer',
@@ -46,6 +49,34 @@ class Wicked_Roles_Controller extends Wicked_Base_Controller {
 			)
 		);
 	}
+
+	/**
+	 * Whether the current user can manage Wicked security settings
+	 * (Security tab + role matrix).
+	 *
+	 * Only:
+	 * - The configured Wicked "super admin" user, or
+	 * - A WordPress admin (manage_options).
+	 *
+	 * @return bool
+	 */
+	public function can_manage_security(): bool {
+		$user_id = get_current_user_id();
+
+		// Plugin-level super admin (from settings)
+		$opts     = get_option( 'wicked_invoicing_settings', array() );
+		$opts     = is_array( $opts ) ? $opts : array();
+		$super_id = absint( $opts['super_admin'] ?? 0 );
+
+
+		$super_id = absint( $opts['super_admin'] ?? 0 );
+		if ( ! $super_id ) {
+			return false;
+		}
+
+		return $user_id === $super_id;
+	}
+
 
 	public function get_role_caps( WP_REST_Request $request ) {
 		$opts = get_option( 'wicked_invoicing_settings', array() );
@@ -225,4 +256,69 @@ class Wicked_Roles_Controller extends Wicked_Base_Controller {
 			}
 		}
 	}
+
+	/**
+	 * Custom login redirect for Wicked roles.
+	 *
+	 * - wicked_employee: always go to the Wicked Invoicing admin Invoices tab.
+	 * - wicked_client:
+	 *     - If they were trying to view a specific URL (e.g. an invoice link that
+	 *       required login), send them there.
+	 *     - Otherwise, send them to the client dashboard.
+	 *
+	 * Everyone else keeps the default WordPress redirect behavior.
+	 *
+	 * @param string           $redirect_to Default redirect target URL.
+	 * @param string           $request     Raw requested redirect URL (from redirect_to param).
+	 * @param \WP_User|\WP_Error $user      Logged-in user object or error.
+	 *
+	 * @return string Redirect URL.
+	 */
+	public function login_redirect( $redirect_to, $request, $user ) {
+		// If login failed or no valid user, don't interfere.
+		if ( is_wp_error( $user ) || ! ( $user instanceof \WP_User ) ) {
+			return $redirect_to;
+		}
+
+		$roles = (array) $user->roles;
+
+		// 1) Wicked Employee → always land on Invoices in wp-admin.
+		if ( in_array( 'wicked_employee', $roles, true ) ) {
+			// /wp-admin/admin.php?page=wicked-invoicing-invoices#/invoices
+			$base_url = add_query_arg(
+				array(
+					'page' => 'wicked-invoicing-invoices',
+				),
+				admin_url( 'admin.php' )
+			);
+
+			return $base_url . '#/invoices';
+		}
+
+		// 2) Wicked Client → either the invoice they clicked, or the client dashboard.
+		if ( in_array( 'wicked_client', $roles, true ) ) {
+
+			// If there is a specific target (e.g. from redirect_to), honor it.
+			// When a protected invoice URL bounces them to login, WordPress will
+			// pass that target URL through $redirect_to.
+			$default_admin = admin_url();
+			if (
+				! empty( $redirect_to )
+				&& $redirect_to !== $default_admin
+				&& rtrim( $redirect_to, '/' ) !== rtrim( $default_admin, '/' )
+			) {
+				return $redirect_to;
+			}
+
+			// Otherwise, fall back to a client dashboard URL.
+			// Update this to your actual client dashboard URL/slug.
+			$client_dashboard_url = home_url( '/client-dashboard/' );
+
+			return $client_dashboard_url;
+		}
+
+		// 3) Everyone else (subscribers, editors, admins, etc.) → default behavior.
+		return $redirect_to;
+	}
+
 }

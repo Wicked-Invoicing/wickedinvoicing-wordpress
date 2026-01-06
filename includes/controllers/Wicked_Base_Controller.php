@@ -217,7 +217,7 @@ class Wicked_Base_Controller {
 		}
 
 		// ⬇⬇⬇ APPLY USER OVERRIDES
-		$over = get_option( 'wicked_status_labels', array() );
+		$over = get_option( 'wicked_invoicing_status_labels', array() );
 		if ( is_array( $over ) ) {
 			foreach ( $over as $slug => $custom ) {
 				$k = sanitize_key( str_replace( '_', '-', (string) $slug ) );

@@ -1,41 +1,31 @@
 /* ==========================================================================
-	Wicked Invoicing – Admin UI (cleaned)
-	========================================================================== */
+   Wicked Invoicing – Admin UI
+   ========================================================================== */
 
 /* ==========================================================================
-	Global Container & Basics
-	========================================================================== */
+   Global Container & Heading
+   ========================================================================== */
 
-
-
-
-/* Wicked Invoicing brand heading – black fill, yellow outline */
-.wicked-invoicing-admin .wi-plugin-heading,
-.wicked-invoicing-admin .wi-plugin-heading .wi-logo-text {
-	font-family: -apple-system, BlinkMacSystemFont, system-ui, "Merriweather", Raleway, sans-serif;
-	letter-spacing: 0.04em;
-	font-size: 2.9rem;
-	margin-bottom: 0.5rem;
-	color: transparent;
-	background: linear-gradient(220deg, #7fff00, #ffe200, #f0ff03);
-	background-color: #000000;
-	background-clip: padding-box;
-	-webkit-background-clip: text;
-
+   /* Make the Wicked Invoicing admin screen use a solid dark background
+   all the way up, so iOS Safari's UI blends into it instead of bright white */
+body.toplevel_page_wicked-invoicing-invoices,
+body.toplevel_page_wicked-invoicing-invoices #wpwrap,
+body.toplevel_page_wicked-invoicing-invoices #wpcontent,
+body.toplevel_page_wicked-invoicing-invoices #wpbody-content {
+	background-color: #0b0e11 !important;
 }
 
-/* Small screens: slightly smaller brand text */
-@media (max-width: 782px) {
-	.wicked-invoicing-admin .wi-plugin-heading,
-	.wicked-invoicing-admin .wi-plugin-heading .wi-logo-text {
-	font-size: 1.6rem;
-	text-align: left;
-	}
+/* Also make the Wicked Invoicing app container transparent so
+   the dark background shows through behind the tabs/header */
+body.toplevel_page_wicked-invoicing-invoices .wicked-invoicing-admin {
+	background-color: transparent;
 }
 
-
-
-
+/* If you want the area behind the WP admin top bar dark as well */
+/* body.toplevel_page_wicked-invoicing-invoices #adminmenuback,
+body.toplevel_page_wicked-invoicing-invoices #adminmenuwrap {
+	background-color: #0b0e11;
+} */
 
 .wicked-invoicing-admin {
 	margin: 3em auto 2rem;
@@ -47,6 +37,29 @@
 	font-family: -apple-system, BlinkMacSystemFont, "Merriweather", Raleway, sans-serif;
 	text-align: center;
 	box-sizing: border-box;
+}
+
+/* Brand heading */
+.wicked-invoicing-admin .wi-plugin-heading,
+.wicked-invoicing-admin .wi-plugin-heading .wi-logo-text {
+	font-family: -apple-system, BlinkMacSystemFont, system-ui, "Merriweather", Raleway, sans-serif;
+	letter-spacing: 0.04em;
+	font-size: 2.9rem;
+	margin-bottom: 0.5rem;
+	color: transparent;
+	background: linear-gradient(220deg, #7fff00, #ffe200, #f0ff03);
+	background-color: #000000;
+	background-clip: padding-box;
+	-webkit-background-clip: text;
+}
+
+/* Small screens: slightly smaller brand text */
+@media (max-width: 782px) {
+	.wicked-invoicing-admin .wi-plugin-heading,
+	.wicked-invoicing-admin .wi-plugin-heading .wi-logo-text {
+		font-size: 1.6rem;
+		text-align: left;
+	}
 }
 
 /* Scrollable regions on small viewports */
@@ -64,7 +77,7 @@
 	flex: 0 0 auto !important;
 }
 
-/* Panels (generic) */
+/* Generic panel */
 .wkd-panel {
 	background: #fff;
 	border: 1px solid #dcdcde;
@@ -72,11 +85,17 @@
 	padding: 16px;
 	text-align: left;
 }
-.wicked-invoicing-admin .wi-items-toolbar { margin-bottom: 8px; }
-.wicked-invoicing-admin .wi-item__flag input { margin: 0; }
+
+.wicked-invoicing-admin .wi-items-toolbar {
+	margin-bottom: 8px;
+}
+.wicked-invoicing-admin .wi-item__flag input {
+	margin: 0;
+}
+
 /* ==========================================================================
-	Tabs
-	========================================================================== */
+   Tabs
+   ========================================================================== */
 
 .wicked-invoicing-admin .wicked-tabs {
 	display: flex;
@@ -91,7 +110,7 @@
 	padding: 0.5rem 1rem;
 	cursor: pointer;
 	font-size: 1rem;
-	color: white;
+	color: #fff;
 }
 
 .wicked-invoicing-admin .wicked-tabs button.active {
@@ -107,16 +126,39 @@
 }
 
 /* ==========================================================================
-	Settings Rows (reused in multiple screens)
-	========================================================================== */
+   Forms / Fields (settings, support, etc.)
+   ========================================================================== */
 
+.wicked-invoicing-admin .wi-field {
+	margin-bottom: 1.5rem;
+}
+
+.wicked-invoicing-admin .wi-field label {
+	display: block;
+	margin-bottom: 0.5rem;
+	font-weight: 700;
+}
+
+.wicked-invoicing-admin .wi-field input,
+.wicked-invoicing-admin .wi-field textarea,
+.wicked-invoicing-admin .wi-field select {
+	width: 100%;
+	padding: 0.5rem;
+	font-size: 1rem;
+}
+
+.wicked-invoicing-admin .wi-error {
+	color: #dc3232;
+	margin-bottom: 1rem;
+}
+
+/* Settings rows reused in multiple screens */
 .wicked-invoicing-admin .wi-setting-row {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	gap: 12px;
 	margin-bottom: 16px;
-	max-width: 520px;
 }
 
 .wicked-invoicing-admin .wi-setting-row label {
@@ -139,52 +181,97 @@
 	color: #888;
 }
 
-/* Titles + labels used in Pro CTA bits */
-.wicked-invoicing-admin .wi-pro-heading { color: #444; margin-bottom: 12px; font-weight: 600; }
-.wicked-invoicing-admin .wi-pro-label   { color: #999; font-style: italic; }
-
-.wicked-invoicing-admin .wi-section-spacer { height: 28px; }
-
-/* ==========================================================================
-	Dark Mode (two ways):
-	1) Pure-CSS toggle via :has() (reacts to your DarkModeToggle checkbox)
-	2) Class-driven via html.wi-dark (if you add that class elsewhere)
-	========================================================================== */
-
-/* 1) Flip admin chrome when your toggle is checked */
-#wpwrap:has(.wi-dark-mode-switch input:checked) { background: #0b0e11 !important; }
-#wpwrap:has(.wi-dark-mode-switch input:checked) #wpcontent,
-#wpwrap:has(.wi-dark-mode-switch input:checked) #wpbody-content { background: transparent !important; }
-#wpwrap:has(.wi-dark-mode-switch input:checked) .wkd-panel {
-	background: #1e1e1e; border-color: #1f232b; color: #e6e8eb;
+/* Titles/labels in Pro bits */
+.wicked-invoicing-admin .wi-pro-heading {
+	color: #444;
+	margin-bottom: 12px;
+	font-weight: 600;
+}
+.wicked-invoicing-admin .wi-pro-label {
+	color: #999;
+	font-style: italic;
 }
 
-/* 2) Class-driven (optional, if you add html.wi-dark in JS or PHP) */
-html.wi-dark #wpwrap { background: #0b0e11 !important; }
-html.wi-dark #wpcontent,
-html.wi-dark #wpbody-content { background: transparent !important; }
-html.wi-dark .wkd-panel { background: #12151a; border-color: #1f232b; color: #e6e8eb; }
+.wicked-invoicing-admin .wi-section-spacer {
+	height: 28px;
+}
 
-/* Local container overrides in dark mode (if you rely on .dark-mode on container) */
-.wicked-invoicing-admin.dark-mode { background: #1e1e1e; color: #e1e1e1; }
-.wicked-invoicing-admin.dark-mode .wicked-tab-content { background: #363636; border-color: #444; }
-.wicked-invoicing-admin.dark-mode .wicked-tabs button { border-color: #555; color: #e1e1e1; }
-.wicked-invoicing-admin.dark-mode .wicked-tabs button.active { border-color: #00a0d2; color: #f0f0f1; background: #1d2327; }
+/* ==========================================================================
+   Dark Mode – container + :has() and class variants
+   ========================================================================== */
+
+/* Pure CSS toggle via :has() */
+#wpwrap:has(.wi-dark-mode-switch input:checked) {
+	background: #0b0e11 !important;
+}
+#wpwrap:has(.wi-dark-mode-switch input:checked) #wpcontent,
+#wpwrap:has(.wi-dark-mode-switch input:checked) #wpbody-content {
+	background: transparent !important;
+}
+#wpwrap:has(.wi-dark-mode-switch input:checked) .wkd-panel {
+	background: #1e1e1e;
+	border-color: #1f232b;
+	color: #e6e8eb;
+}
+
+/* Class-driven dark mode */
+html.wi-dark #wpwrap {
+	background: #0b0e11 !important;
+}
+html.wi-dark #wpcontent,
+html.wi-dark #wpbody-content {
+	background: transparent !important;
+}
+html.wi-dark .wkd-panel {
+	background: #12151a;
+	border-color: #1f232b;
+	color: #e6e8eb;
+}
+
+/* Local container dark mode */
+.wicked-invoicing-admin.dark-mode {
+	background: #1e1e1e;
+	color: #e1e1e1;
+}
+.wicked-invoicing-admin.dark-mode .wicked-tab-content {
+	background: #363636;
+	border-color: #444;
+}
+.wicked-invoicing-admin.dark-mode .wicked-tabs button {
+	border-color: #555;
+	color: #e1e1e1;
+}
+.wicked-invoicing-admin.dark-mode .wicked-tabs button.active {
+	border-color: #00a0d2;
+	color: #f0f0f1;
+	background: #1d2327;
+}
 .wicked-invoicing-admin.dark-mode h1,
 .wicked-invoicing-admin.dark-mode h2,
 .wicked-invoicing-admin.dark-mode h3,
 .wicked-invoicing-admin.dark-mode h4,
 .wicked-invoicing-admin.dark-mode h5,
-.wicked-invoicing-admin.dark-mode h6 { border-bottom: 1px solid #444; color: #fff; }
-.wicked-invoicing-admin.dark-mode .wi-pro-heading { color: #f2f2f2; }
-.wicked-invoicing-admin.dark-mode .wi-pro-label   { color: #aaa; }
-.wicked-invoicing-admin.dark-mode .wi-setting-row label { color: #e6e6e6; }
+.wicked-invoicing-admin.dark-mode h6 {
+	border-bottom: 1px solid #444;
+	color: #fff;
+}
+.wicked-invoicing-admin.dark-mode .wi-pro-heading {
+	color: #f2f2f2;
+}
+.wicked-invoicing-admin.dark-mode .wi-pro-label {
+	color: #aaa;
+}
+.wicked-invoicing-admin.dark-mode .wi-setting-row label {
+	color: #e6e6e6;
+}
 .wicked-invoicing-admin.dark-mode input[type="checkbox"],
-.wicked-invoicing-admin.dark-mode input[type="email"] { color: #fafafa; border-color: #444; }
+.wicked-invoicing-admin.dark-mode input[type="email"] {
+	border-color: #444;
+}
 
 /* ==========================================================================
-	Dark Mode Toggle (top-right)
-	========================================================================== */
+   Dark Mode Toggle (top-right)
+   ========================================================================== */
 
 .wicked-invoicing-admin .wi-dark-mode-switch {
 	position: absolute;
@@ -193,46 +280,375 @@ html.wi-dark .wkd-panel { background: #12151a; border-color: #1f232b; color: #e6
 	display: inline-block;
 	width: 50px;
 	height: 24px;
+	z-index: 10;
 }
-.wicked-invoicing-admin .wi-dark-mode-switch input { opacity: 0; }
+
+.wicked-invoicing-admin .wi-dark-mode-switch input {
+	opacity: 0;
+}
+
 .wicked-invoicing-admin .wi-dark-mode-switch .slider {
-	position: absolute; cursor: pointer; inset: 0;
-	background-color: #ccc; border-radius: 34px; transition: .4s;
+	position: absolute;
+	cursor: pointer;
+	inset: 0;
+	background-color: #ccc;
+	border-radius: 34px;
+	transition: .4s;
 }
+
 .wicked-invoicing-admin .wi-dark-mode-switch .slider:before {
-	content: ""; position: absolute; height: 18px; width: 18px; left: 3px; bottom: 3px;
-	background: #fff; border-radius: 50%; transition: .4s;
+	content: "";
+	position: absolute;
+	height: 18px;
+	width: 18px;
+	left: 3px;
+	bottom: 3px;
+	background: #fff;
+	border-radius: 50%;
+	transition: .4s;
 }
-.wicked-invoicing-admin .wi-dark-mode-switch input:checked + .slider { background-color: var(--accent, #0073aa); }
-.wicked-invoicing-admin .wi-dark-mode-switch input:checked + .slider:before { transform: translateX(26px); }
+
+.wicked-invoicing-admin .wi-dark-mode-switch input:checked + .slider {
+	background-color: var(--accent, #0073aa);
+}
+
+.wicked-invoicing-admin .wi-dark-mode-switch input:checked + .slider:before {
+	transform: translateX(26px);
+}
 
 /* ==========================================================================
-	Forms (settings/support/etc.)
-	========================================================================== */
+   Security Tab
+   ========================================================================== */
 
-.wicked-invoicing-admin .wi-settings-form { max-width: 600px; margin: 0 auto; text-align: left; }
-.wicked-invoicing-admin .wi-field { margin-bottom: 1.5rem; }
-.wicked-invoicing-admin .wi-field label { display: block; margin-bottom: 0.5rem; font-weight: 700; }
-.wicked-invoicing-admin .wi-field input,
-.wicked-invoicing-admin .wi-field textarea,
-.wicked-invoicing-admin .wi-field select { width: 100%; padding: 0.5rem; font-size: 1rem; }
-.wicked-invoicing-admin .wi-error { color: #dc3232; margin-bottom: 1rem; }
+.wi-field--security-super-admin {
+	margin-bottom: 24px;
+}
+
+.wi-field--security-super-admin .wi-field__label {
+	font-weight: 600;
+	margin-bottom: 4px;
+	display: block;
+}
+
+.wi-field--security-super-admin .wi-field__description {
+	margin: 0 0 8px;
+	font-size: 13px;
+	opacity: 0.8;
+}
+
+.wi-select--security-super-admin {
+	max-width: 320px;
+}
+
+/* Matrix wrapper – no horizontal scroll */
+.wi-security-table-wrapper {
+	width: 100%;
+	margin-top: 16px;
+	overflow-x: visible;
+}
+
+/* Base table styling */
+.wi-security-table {
+	width: 100%;
+	border-collapse: collapse;
+	table-layout: auto;
+}
+
+.wi-security-table th,
+.wi-security-table td {
+	padding: 8px 10px;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* Headers & role column */
+.wi-security-table__header {
+	font-size: 13px;
+	font-weight: 600;
+	text-align: left;
+}
+
+.wi-security-table__header--role {
+	width: 20%;
+}
+
+.wi-security-table__header--cap {
+	text-align: center;
+}
+
+/* Keep header labels on a line where possible */
+.wi-cap-header__label {
+	display: inline-block;
+	white-space: normal;
+  	word-break: break-word;
+}
+
+/* Zebra striping for rows */
+.wi-security-table__row:nth-child(odd) td,
+.wi-security-table__row:nth-child(odd) th {
+	background-color: rgba(0, 0, 0, 0.01);
+}
+
+.wi-security-table__role {
+	font-weight: 600;
+}
+
+/* Cells */
+.wi-security-table__cell {
+	text-align: center;
+}
+
+.wi-security-table__cell-inner {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* Capability header + tooltip "?" button */
+.wi-cap-header {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.wi-cap-header__help {
+	border: none;
+	background: none;
+	padding: 0;
+	margin: 0;
+	font-size: 11px;
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	cursor: default;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	opacity: 0.6;
+	line-height: 1;
+}
+
+.wi-cap-header__help:hover,
+.wi-cap-header__help:focus {
+	opacity: 1;
+}
+
+/* Small hint text under the table */
+.wi-security-table__hint {
+	margin-top: 8px;
+	font-size: 12px;
+	opacity: 0.8;
+}
+
+/* Security table – mobile tweaks */
+@media (max-width: 782px) {
+	.wi-security-table {
+		font-size: 12px;
+	}
+	.wi-security-table th,
+	.wi-security-table td {
+		padding: 6px 6px;
+	}
+	.wi-security-table__header--role {
+		width: 26%;
+	}
+	.wi-select--security-super-admin {
+		width: 100%;
+		max-width: 100%;
+	}
+}
+
+@media (max-width: 480px) {
+	.wi-security-table {
+		font-size: 11px;
+	}
+	.wi-security-table th,
+	.wi-security-table td {
+		padding: 4px 4px;
+	}
+}
 
 /* ==========================================================================
-	Invoices List
-	========================================================================== */
+   Invoices List
+   ========================================================================== */
 
+.wi-invoices-container {
+	padding: 1rem;
+	max-width: 100%;
+	box-sizing: border-box;
+}
 
-/* ============================
-	Invoices table – DARK MODE
-	(class based)
-	============================ */
+.wi-invoices-container > button {
+	background: #0073aa;
+	border: none;
+	color: #fff;
+	padding: 0.5rem 1rem;
+	margin-bottom: 1rem;
+	font-size: 1rem;
+	border-radius: 3px;
+	cursor: pointer;
+}
+
+.wi-invoices-container > button:hover {
+	background: #006799;
+}
+
+.wi-invoices-container .wi-filter-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	margin-bottom: 1rem;
+	align-items: center;
+}
+
+.wi-invoices-container .wi-filter-row select,
+.wi-invoices-container .wi-filter-row input[type="search"] {
+	padding: 0.4rem 0.6rem;
+	border: 1px solid #ccd0d4;
+	border-radius: 3px;
+	font-size: 0.95rem;
+}
+
+.wi-invoices-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-bottom: 1rem;
+}
+
+.wi-invoices-table th,
+.wi-invoices-table td {
+	border: 1px solid #e5e5e5;
+	padding: 0.75rem;
+	text-align: left;
+	white-space: nowrap;
+}
+
+.wi-invoices-table th {
+	background: #f1f1f1;
+	cursor: pointer;
+	user-select: none;
+}
+
+.wi-invoices-table th:hover {
+	background: #e5e5e5;
+}
+
+.wi-invoices-table tbody tr:nth-child(even) {
+	background: #fafafa;
+}
+
+.wi-invoices-table tbody tr:hover {
+	background: #f0f8ff;
+}
+
+.wi-invoices-table select.status-select {
+	padding: 2px 6px;
+	border-radius: 3px;
+	border: 1px solid #ccc;
+}
+
+/* Status colors */
+.wi-invoices-table select.status-select[value="paid"],
+.wi-invoices-table select.status-select option[value="paid"] {
+	background-color: #d4edda;
+}
+.wi-invoices-table select.status-select[value="pending"] {
+	background-color: #fff3cd;
+}
+.wi-invoices-table select.status-select[value="deposit-paid"] {
+	background-color: #cce5ff;
+}
+.wi-invoices-table select.status-select[value="temp"] {
+	background-color: #f8d7da;
+}
+
+/* Action button in table */
+.wi-invoices-table button {
+	background: #0085ba;
+	border: none;
+	color: #fff;
+	padding: 0.3rem 0.6rem;
+	font-size: 0.9rem;
+	border-radius: 3px;
+	cursor: pointer;
+}
+.wi-invoices-table button:hover {
+	background: #0073a0;
+}
+
+/* Top controls & pagination */
+.wi-invoice-controls {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 1rem;
+	margin-bottom: 1.5rem;
+}
+.control-left {
+	flex: 1;
+	text-align: left;
+}
+.control-center {
+	flex: 1;
+	text-align: center;
+}
+.control-right {
+	flex: 1;
+	text-align: right;
+}
+.control-center select,
+.control-right input[type="search"] {
+	padding: 0.4rem 0.6rem;
+	font-size: 1rem;
+	border: 1px solid #ccd0d4;
+	border-radius: 3px;
+	vertical-align: top;
+}
+.control-right input[type="search"] {
+	max-width: 240px;
+	width: 100%;
+}
+
+/* Shared controls for logs + invoices */
+.wi-logs-controls,
+.wi-invoices-container .wi-logs-controls {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin-top: 1rem;
+}
+
+.wi-logs-controls button {
+	padding: 0.4rem 0.8rem;
+	border: 1px solid #ccd0d4;
+	background: #fff;
+	cursor: pointer;
+	border-radius: 3px;
+	font-size: 0.95rem;
+}
+
+.wi-logs-controls button:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+.wi-logs-controls .wi-page-indicator {
+	font-weight: 700;
+}
+
+.wi-logs-controls select {
+	margin-left: auto;
+	padding: 0.3rem;
+	border: 1px solid #ccd0d4;
+	border-radius: 3px;
+	font-size: 0.9rem;
+}
+
+/* Invoices table – dark mode (class) */
 html.wi-dark .wi-invoices-table th,
 html.wi-dark .wi-invoices-table td {
 	border-color: #3a3d41;
 	color: #e5e7eb;
 }
-
 html.wi-dark .wi-invoices-table th {
 	background: #2a2a2a;
 	color: #eaeef2;
@@ -241,28 +657,27 @@ html.wi-dark .wi-invoices-table th {
 html.wi-dark .wi-invoices-table th:hover {
 	background: #33373c;
 }
-
-html.wi-dark .wi-invoices-table tbody tr:nth-child(even) { background: #262a2f; }
-html.wi-dark .wi-invoices-table tbody tr:nth-child(odd)  { background: #1f2328; }
-html.wi-dark .wi-invoices-table tbody tr:hover           { background: #33373c; }
-
-/* selects inside table (status dropdown) */
+html.wi-dark .wi-invoices-table tbody tr:nth-child(even) {
+	background: #262a2f;
+}
+html.wi-dark .wi-invoices-table tbody tr:nth-child(odd) {
+	background: #1f2328;
+}
+html.wi-dark .wi-invoices-table tbody tr:hover {
+	background: #33373c;
+}
 html.wi-dark .wi-invoices-table select.status-select {
 	background: #1f2328;
 	color: #e5e7eb;
 	border-color: #3a3d41;
 }
 
-/* ============================
-	Invoices table – DARK MODE
-	(pure CSS via :has() toggle)
-	============================ */
+/* Invoices table – dark mode via :has() */
 #wpwrap:has(.wi-dark-mode-switch input:checked) .wi-invoices-table th,
 #wpwrap:has(.wi-dark-mode-switch input:checked) .wi-invoices-table td {
 	border-color: #3a3d41;
 	color: #e5e7eb;
 }
-
 #wpwrap:has(.wi-dark-mode-switch input:checked) .wi-invoices-table th {
 	background: #2a2a2a;
 	color: #eaeef2;
@@ -271,78 +686,19 @@ html.wi-dark .wi-invoices-table select.status-select {
 #wpwrap:has(.wi-dark-mode-switch input:checked) .wi-invoices-table th:hover {
 	background: #33373c;
 }
-
-#wpwrap:has(.wi-dark-mode-switch input:checked) .wi-invoices-table tbody tr:nth-child(even) { background: #262a2f; }
-#wpwrap:has(.wi-dark-mode-switch input:checked) .wi-invoices-table tbody tr:nth-child(odd)  { background: #1f2328; }
-#wpwrap:has(.wi-dark-mode-switch input:checked) .wi-invoices-table tbody tr:hover           { background: #33373c; }
-
+#wpwrap:has(.wi-dark-mode-switch input:checked) .wi-invoices-table tbody tr:nth-child(even) {
+	background: #262a2f;
+}
+#wpwrap:has(.wi-dark-mode-switch input:checked) .wi-invoices-table tbody tr:nth-child(odd) {
+	background: #1f2328;
+}
+#wpwrap:has(.wi-dark-mode-switch input:checked) .wi-invoices-table tbody tr:hover {
+	background: #33373c;
+}
 #wpwrap:has(.wi-dark-mode-switch input:checked) .wi-invoices-table select.status-select {
 	background: #1f2328;
 	color: #e5e7eb;
 	border-color: #3a3d41;
-}
-
-
-
-.wi-invoices-container { padding: 1rem; max-width: 100%; box-sizing: border-box; }
-.wi-invoices-container > button {
-	background: #0073aa; border: none; color: #fff;
-	padding: 0.5rem 1rem; margin-bottom: 1rem; font-size: 1rem; border-radius: 3px; cursor: pointer;
-}
-.wi-invoices-container > button:hover { background: #006799; }
-
-.wi-invoices-container .wi-filter-row {
-	display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; align-items: center;
-}
-.wi-invoices-container .wi-filter-row select,
-.wi-invoices-container .wi-filter-row input[type="search"] {
-	padding: 0.4rem 0.6rem; border: 1px solid #ccd0d4; border-radius: 3px; font-size: 0.95rem;
-}
-
-.wi-invoices-table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
-.wi-invoices-table th, .wi-invoices-table td { border: 1px solid #e5e5e5; padding: 0.75rem; text-align: left; white-space: nowrap; }
-.wi-invoices-table th { background: #f1f1f1; cursor: pointer; user-select: none; }
-.wi-invoices-table th:hover { background: #e5e5e5; }
-.wi-invoices-table tbody tr:nth-child(even) { background: #fafafa; }
-.wi-invoices-table tbody tr:hover { background: #f0f8ff; }
-
-.wi-invoices-table select.status-select { padding: 2px 6px; border-radius: 3px; border: 1px solid #ccc; }
-.wi-invoices-table select.status-select[value="paid"],
-.wi-invoices-table select.status-select option[value="paid"]   { background-color: #d4edda; }
-.wi-invoices-table select.status-select[value="pending"]       { background-color: #fff3cd; }
-.wi-invoices-table select.status-select[value="deposit-paid"]  { background-color: #cce5ff; }
-.wi-invoices-table select.status-select[value="temp"]          { background-color: #f8d7da; }
-
-/* Action button in table */
-.wi-invoices-table button {
-	background: #0085ba; border: none; color: #fff; padding: 0.3rem 0.6rem;
-	font-size: 0.9rem; border-radius: 3px; cursor: pointer;
-}
-.wi-invoices-table button:hover { background: #0073a0; }
-
-/* Invoice list top controls & pagination (reusing wi-logs-controls style) */
-.wi-invoice-controls { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
-.control-left  { flex: 1; text-align: left;  }
-.control-center{ flex: 1; text-align: center;}
-.control-right { flex: 1; text-align: right; }
-.control-center select,
-.control-right input[type="search"] {
-	padding: 0.4rem 0.6rem; font-size: 1rem; border: 1px solid #ccd0d4; border-radius: 3px; vertical-align: top;
-}
-.control-right input[type="search"] { max-width: 240px; width: 100%; }
-
-/* Shared controls */
-.wi-logs-controls,
-.wi-invoices-container .wi-logs-controls {
-	display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem;
-}
-.wi-logs-controls button {
-	padding: 0.4rem 0.8rem; border: 1px solid #ccd0d4; background: #fff; cursor: pointer; border-radius: 3px; font-size: 0.95rem;
-}
-.wi-logs-controls button:disabled { opacity: 0.5; cursor: not-allowed; }
-.wi-logs-controls .wi-page-indicator { font-weight: 700; }
-.wi-logs-controls select {
-	margin-left: auto; padding: 0.3rem; border: 1px solid #ccd0d4; border-radius: 3px; font-size: 0.9rem;
 }
 
 /* Hide the “Edit Invoice” submenu link */
@@ -351,289 +707,688 @@ html.wi-dark .wi-invoices-table select.status-select {
 }
 
 /* ==========================================================================
-	Logs
-	========================================================================== */
+   Logs
+   ========================================================================== */
 
-.wicked-invoicing-admin .wi-log-filters { margin-bottom: 1em; }
-.wicked-invoicing-admin .wi-log-filters button {
-	margin-right: 8px; padding: 4px 12px; border: 1px solid #ccc; border-radius: 4px; background: #fff; color: #000; cursor: pointer;
+.wicked-invoicing-admin .wi-log-filters {
+	margin-bottom: 1em;
 }
-.wicked-invoicing-admin .wi-log-filters button.active { background: #3895c4; color: #fff; border-color: #006ba1; }
 
-.wicked-invoicing-admin .wi-logs-table { width: 100%; border-collapse: collapse; margin-bottom: 1em; }
+.wicked-invoicing-admin .wi-log-filters button {
+	margin-right: 8px;
+	padding: 4px 12px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	background: #fff;
+	color: #000;
+	cursor: pointer;
+}
+
+.wicked-invoicing-admin .wi-log-filters button.active {
+	background: #3895c4;
+	color: #fff;
+	border-color: #006ba1;
+}
+
+.wicked-invoicing-admin .wi-logs-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-bottom: 1em;
+}
+
 .wicked-invoicing-admin .wi-logs-table th,
-.wicked-invoicing-admin .wi-logs-table td { border-bottom: 1px solid #ddd; padding: 8px 12px; text-align: left; }
-.wicked-invoicing-admin .wi-logs-table th { background: #f1f1f1; font-weight: 600; }
-.wicked-invoicing-admin .wi-logs-table tr:nth-child(even) { background: #fafafa; }
+.wicked-invoicing-admin .wi-logs-table td {
+	border-bottom: 1px solid #ddd;
+	padding: 8px 12px;
+	text-align: left;
+}
 
-.wicked-invoicing-admin .wi-clear-button { margin-left: auto; background: #dc3232 !important; color: #fff; border-color: #a00 !important; }
-.wicked-invoicing-admin .wi-clear-button:hover { background: #b52a2a; }
+.wicked-invoicing-admin .wi-logs-table th {
+	background: #f1f1f1;
+	font-weight: 600;
+}
+
+.wicked-invoicing-admin .wi-logs-table tr:nth-child(even) {
+	background: #fafafa;
+}
+
+.wicked-invoicing-admin .wi-clear-button {
+	margin-left: auto;
+	background: #dc3232 !important;
+	color: #fff;
+	border-color: #a00 !important;
+}
+.wicked-invoicing-admin .wi-clear-button:hover {
+	background: #b52a2a;
+}
 
 /* Logs – dark mode */
-.wicked-invoicing-admin.dark-mode .wi-logs-table th { background: #333; color: #eee; }
-.wicked-invoicing-admin.dark-mode .wi-logs-table tr:nth-child(even) { background: #2a2a2a; }
-.wicked-invoicing-admin.dark-mode .wi-logs-table tr:nth-child(odd)  { background: #222; }
-.wicked-invoicing-admin.dark-mode .wi-logs-table td { color: #ddd; border-color: #444; }
-.wicked-invoicing-admin.dark-mode .wi-logs-controls button { background: #444; color: #ddd; border-color: #555; }
-.wicked-invoicing-admin.dark-mode .wi-logs-controls button:disabled { opacity: 0.4; }
-.wicked-invoicing-admin.dark-mode .wi-logs-controls select { background: #2a2a2a; color: #ddd; border-color: #555; }
+.wicked-invoicing-admin.dark-mode .wi-logs-table th {
+	background: #333;
+	color: #eee;
+}
+.wicked-invoicing-admin.dark-mode .wi-logs-table tr:nth-child(even) {
+	background: #2a2a2a;
+}
+.wicked-invoicing-admin.dark-mode .wi-logs-table tr:nth-child(odd) {
+	background: #222;
+}
+.wicked-invoicing-admin.dark-mode .wi-logs-table td {
+	color: #ddd;
+	border-color: #444;
+}
+.wicked-invoicing-admin.dark-mode .wi-logs-controls button {
+	background: #444;
+	color: #ddd;
+	border-color: #555;
+}
+.wicked-invoicing-admin.dark-mode .wi-logs-controls button:disabled {
+	opacity: 0.4;
+}
+.wicked-invoicing-admin.dark-mode .wi-logs-controls select {
+	background: #2a2a2a;
+	color: #ddd;
+	border-color: #555;
+}
 
 /* ==========================================================================
-	Invoice Edit – Layout & Cards
-	========================================================================== */
+   Invoice Edit – Layout & Cards
+   ========================================================================== */
 
-.wi-sections { display: grid; gap: 16px; padding-top: 10px; }
-.wi-sections.grid-2 { grid-template-columns: 1fr 1fr; }
-.wi-sections.grid-1 { grid-template-columns: 1fr; }
-.wi-sections.grid-2 .wi-section-card.span-2 { grid-column: span 2; }
+.wi-sections {
+	display: grid;
+	gap: 16px;
+	padding-top: 10px;
+}
+.wi-sections.grid-2 {
+	grid-template-columns: 1fr 1fr;
+}
+.wi-sections.grid-1 {
+	grid-template-columns: 1fr;
+}
+.wi-sections.grid-2 .wi-section-card.span-2 {
+	grid-column: span 2;
+}
 
 @media (max-width: 960px) {
-	.wi-sections.grid-2 { grid-template-columns: 1fr; }
+	.wi-sections.grid-2 {
+		grid-template-columns: 1fr;
+	}
 }
 
 /* Card shell */
 .wi-section-card {
-	border: 1px solid #dcdcde; border-radius: 10px; background: #fff;
-	box-shadow: 0 1px 2px rgba(0,0,0,.04); overflow: hidden;
+	border: 1px solid #dcdcde;
+	border-radius: 10px;
+	background: #fff;
+	box-shadow: 0 1px 2px rgba(0,0,0,.04);
+	overflow: hidden;
 }
-.wi-section-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,.06); }
+.wi-section-card:hover {
+	box-shadow: 0 4px 14px rgba(0,0,0,.06);
+}
 
-/* Grabbable top handle */
+/* Drag handle */
 .wi-section-card .wi-dnd-handle {
-	display: flex; align-items: center; gap: 10px; padding: 10px 12px;
-	border-bottom: 1px solid #e2e4e7; cursor: grab; user-select: none;
-	background: #6b7280; color: #fff;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 10px 12px;
+	border-bottom: 1px solid #e2e4e7;
+	cursor: grab;
+	user-select: none;
+	background: #6b7280;
+	color: #fff;
 }
-.wi-dnd-handle:active { cursor: grabbing; }
-.wi-dnd-icon { font-size: 20px; line-height: 1; color: inherit; }
-.wi-dnd-title { font-weight: 600; color: inherit; }
+.wi-dnd-handle:active {
+	cursor: grabbing;
+}
+.wi-dnd-icon {
+	font-size: 20px;
+	line-height: 1;
+	color: inherit;
+}
+.wi-dnd-title {
+	font-weight: 600;
+	color: inherit;
+}
 
 /* Card body */
-.wi-section-card__body { padding: 14px 14px 16px; background: #dcdcde; color: #000; }
+.wi-section-card__body {
+	padding: 14px 14px 16px;
+	background: #dcdcde;
+	color: #000;
+}
 
 /* Handle actions */
-.wi-handle-actions { margin-left: auto; display: flex; gap: 6px; }
-.wi-span-btn { border: 1px solid rgba(255,255,255,.5); background: rgba(255,255,255,.15); color: #fff; }
-.wi-span-btn.is-active { background: rgba(255,255,255,.3); border-color: rgba(255,255,255,.8); }
+.wi-handle-actions {
+	margin-left: auto;
+	display: flex;
+	gap: 6px;
+}
+.wi-span-btn {
+	border: 1px solid rgba(255,255,255,.5);
+	background: rgba(255,255,255,.15);
+	color: #fff;
+}
+.wi-span-btn.is-active {
+	background: rgba(255,255,255,.3);
+	border-color: rgba(255,255,255,.8);
+}
 
 /* New Client inline card */
 .wi-new-client {
-	margin-top: 12px; padding: 16px; border: 1px solid #dcdcde; border-radius: 8px; background: #fff;
-	box-shadow: 0 1px 2px rgba(0,0,0,.05); position: relative; animation: wiFadeSlide .18s ease-out;
+	margin-top: 12px;
+	padding: 16px;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+	background: #fff;
+	box-shadow: 0 1px 2px rgba(0,0,0,.05);
+	position: relative;
+	animation: wiFadeSlide .18s ease-out;
 }
+/* Invoice edit: force all cards full-width on mobile */
+@media (max-width: 782px) {
+  .wi-sections.grid-2 {
+    grid-template-columns: 1fr !important;
+    gap: 12px;
+  }
+
+  .wi-section-card,
+  .wi-section-card.span-1,
+  .wi-section-card.span-2 {
+    grid-column: 1 / -1 !important;
+  }
+}
+
+
 .wi-new-client::before {
 	content: 'New Client';
-	position: absolute; top: -10px; left: 16px;
-	background: #2271b1; color: #fff; font-size: 11px; line-height: 1; padding: 4px 8px; border-radius: 999px;
+	position: absolute;
+	top: -10px;
+	left: 16px;
+	background: #2271b1;
+	color: #fff;
+	font-size: 11px;
+	line-height: 1;
+	padding: 4px 8px;
+	border-radius: 999px;
 	box-shadow: 0 1px 2px rgba(0,0,0,.1);
 }
-@keyframes wiFadeSlide { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
 
-.wi-new-client .wi-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 16px; }
-.wi-new-client label { display: block; font-weight: 500; color: #1d2327; }
+@keyframes wiFadeSlide {
+	from { opacity: 0; transform: translateY(-4px); }
+	to   { opacity: 1; transform: none; }
+}
+
+.wi-new-client .wi-grid-2 {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 14px 16px;
+}
+
+.wi-new-client label {
+	display: block;
+	font-weight: 500;
+	color: #1d2327;
+}
+
 .wi-new-client input[type="text"],
 .wi-new-client input[type="email"],
 .wi-new-client input[type="tel"] {
-	width: 100%; border: 1px solid #c3c4c7; border-radius: 6px; padding: 8px 10px; background: #fff; color: #1d2327;
+	width: 100%;
+	border: 1px solid #c3c4c7;
+	border-radius: 6px;
+	padding: 8px 10px;
+	background: #fff;
+	color: #1d2327;
 }
-.wi-new-client input:focus { outline: none; border-color: #2271b1; box-shadow: 0 0 0 1px #2271b1; }
 
-.wi-new-client__actions { margin-top: 14px; padding-top: 12px; border-top: 1px solid #e2e4e7; display: flex; justify-content: flex-end; gap: 8px; }
+.wi-new-client input:focus {
+	outline: none;
+	border-color: #2271b1;
+	box-shadow: 0 0 0 1px #2271b1;
+}
+
+.wi-new-client__actions {
+	margin-top: 14px;
+	padding-top: 12px;
+	border-top: 1px solid #e2e4e7;
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+}
+
 .wi-new-client .wi-error {
-	margin: 0 0 10px; padding: 8px 10px; border: 1px solid #dc3232; background: #ffe9e9; color: #8a1f1f; border-radius: 6px;
+	margin: 0 0 10px;
+	padding: 8px 10px;
+	border: 1px solid #dc3232;
+	background: #ffe9e9;
+	color: #8a1f1f;
+	border-radius: 6px;
 }
 
-@media (max-width: 782px) {
-	.wi-sections.grid-2 { grid-template-columns: 1fr !important; gap: 12px; }
-	.wi-section-card,
-	.wi-section-card.span-1,
-	.wi-section-card.span-2 { grid-column: 1 / -1 !important; }
-	.wi-handle-actions .wi-span-btn { display: none; }
-
-	/* Line items stack */
-	.wi-item__row { display: flex; flex-wrap: wrap; gap: 10px; }
-	.wi-item__field { flex: 1 1 140px; min-width: 140px; }
-	.wi-item__total, .wi-item__actions { flex: 1 1 140px; }
+/* Edit UI – dark mode */
+html.wi-dark .wi-section-card {
+	background: #1f2124;
+	border-color: #2a2c2f;
+	box-shadow: 0 1px 2px rgba(0,0,0,.5);
 }
-
-/* Dark mode for Edit UI */
-html.wi-dark .wi-section-card { background: #1f2124; border-color: #2a2c2f; box-shadow: 0 1px 2px rgba(0,0,0,.5); }
-html.wi-dark .wi-section-card .wi-dnd-handle { background: #2d3748; border-bottom-color: #2a2c2f; color: #fff; }
-html.wi-dark .wi-handle-actions .wi-span-btn { border: 1px solid rgba(255,255,255,.2); background: rgba(255,255,255,.08); color: #fff; }
-html.wi-dark .wi-span-btn.is-active { background: rgba(255,255,255,.18); border-color: rgba(255,255,255,.6); }
-html.wi-dark .wi-new-client { background: #1f2124; border-color: #2a2c2f; box-shadow: 0 1px 2px rgba(0,0,0,.4); }
-html.wi-dark .wi-new-client::before { background: #3b82f6; color: #fff; }
-html.wi-dark .wi-new-client label { color: #e5e7eb; }
+html.wi-dark .wi-section-card .wi-dnd-handle {
+	background: #2d3748;
+	border-bottom-color: #2a2c2f;
+	color: #fff;
+}
+html.wi-dark .wi-handle-actions .wi-span-btn {
+	border: 1px solid rgba(255,255,255,.2);
+	background: rgba(255,255,255,.08);
+	color: #fff;
+}
+html.wi-dark .wi-span-btn.is-active {
+	background: rgba(255,255,255,.18);
+	border-color: rgba(255,255,255,.6);
+}
+html.wi-dark .wi-new-client {
+	background: #1f2124;
+	border-color: #2a2c2f;
+	box-shadow: 0 1px 2px rgba(0,0,0,.4);
+}
+html.wi-dark .wi-new-client::before {
+	background: #3b82f6;
+	color: #fff;
+}
+html.wi-dark .wi-new-client label {
+	color: #e5e7eb;
+}
 html.wi-dark .wi-new-client input[type="text"],
 html.wi-dark .wi-new-client input[type="email"],
 html.wi-dark .wi-new-client input[type="tel"] {
-	border-color: #2a2c2f; color: #f3f4f6; background: #1f2124;
+	border-color: #2a2c2f;
+	color: #f3f4f6;
+	background: #1f2124;
 }
-html.wi-dark .wi-new-client input:focus { border-color: #60a5fa; box-shadow: 0 0 0 1px #60a5fa; }
-html.wi-dark .wi-new-client__actions { border-top-color: #2a2c2f; }
-html.wi-dark .wi-new-client .wi-error { border-color: #ef4444; background: rgba(239,68,68,.12); color: #fecaca; }
+html.wi-dark .wi-new-client input:focus {
+	border-color: #60a5fa;
+	box-shadow: 0 0 0 1px #60a5fa;
+}
+html.wi-dark .wi-new-client__actions {
+	border-top-color: #2a2c2f;
+}
+html.wi-dark .wi-new-client .wi-error {
+	border-color: #ef4444;
+	background: rgba(239,68,68,.12);
+	color: #fecaca;
+}
 
 /* Line items */
-.wi-items { display: flex; flex-direction: column; gap: 14px; }
-.wi-item { border: 1px solid #000; border-radius: 8px; padding: 12px; }
-.wi-item__label { display: block; font-weight: 600; margin-bottom: 6px; }
-.wi-item__desc {
-	width: 100%; resize: vertical; font-family: inherit; font-size: 13px; line-height: 1.4;
-	padding: 8px; border-radius: 6px; border: 1px solid #dcdcde; background: #fff;
+.wi-items {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
 }
-.wi-item__row {
-	display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) 1fr auto;
-	gap: 10px; margin-top: 10px; align-items: end;
-}
-.wi-item__field { display: flex; flex-direction: column; gap: 4px; }
-.wi-item__field > input { width: 100%; padding: 6px 8px; border: 1px solid #dcdcde; border-radius: 6px; background: #fff; }
-.wi-item__total { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
-.wi-item__total > strong { font-size: 14px; }
-.wi-item__actions { display: flex; justify-content: flex-end; }
 
-/* Toolbar */
-.wi-toolbar {
-	position: sticky; top: 0; z-index: 100;
-	display: flex; align-items: center; justify-content: space-between; gap: 12px;
-	border-bottom: 1px solid #e2e4e7; border-radius: 10px; background: #1f2124;
+.wi-item {
+	border: 1px solid #000;
+	border-radius: 8px;
+	padding: 12px;
 }
-.wi-toolbar__left  { display: flex; justify-content: flex-start; }
-.wi-toolbar__right { display: flex; justify-content: flex-end; }
-.wi-toolbar__url { display: inline-flex; align-items: baseline; gap: 6px; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #cbd5e1; margin-left: 5px; }
-.wi-toolbar__url a { text-overflow: ellipsis; overflow: hidden; color: #1869cc; }
-.wi-save-btn { font-size: 14px; margin: 38px !important; width: 300px; height: 50px; }
+
+.wi-item__label {
+	display: block;
+	font-weight: 600;
+	margin-bottom: 6px;
+}
+
+.wi-item__desc {
+	width: 100%;
+	resize: vertical;
+	font-family: inherit;
+	font-size: 13px;
+	line-height: 1.4;
+	padding: 8px;
+	border-radius: 6px;
+	border: 1px solid #dcdcde;
+	background: #fff;
+}
+
+.wi-item__row {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr)) 1fr auto;
+	gap: 10px;
+	margin-top: 10px;
+	align-items: end;
+}
+
+.wi-item__field {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.wi-item__field > input {
+	width: 100%;
+	padding: 6px 8px;
+	border: 1px solid #dcdcde;
+	border-radius: 6px;
+	background: #fff;
+}
+
+.wi-item__total {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	align-items: flex-start;
+}
+
+.wi-item__total > strong {
+	font-size: 14px;
+}
+
+.wi-item__actions {
+	display: flex;
+	justify-content: flex-end;
+}
+
+/* Toolbar at top of edit screen */
+.wi-toolbar {
+	position: sticky;
+	top: 0;
+	z-index: 100;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	border-bottom: 1px solid #e2e4e7;
+	border-radius: 10px;
+	background: #1f2124;
+}
+
+.wi-toolbar__left {
+	display: flex;
+	justify-content: flex-start;
+}
+
+.wi-toolbar__right {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.wi-toolbar__url {
+	display: inline-flex;
+	align-items: baseline;
+	gap: 6px;
+	max-width: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	color: #cbd5e1;
+	margin-left: 5px;
+}
+
+.wi-toolbar__url a {
+	text-overflow: ellipsis;
+	overflow: hidden;
+	color: #1869cc;
+}
+
+.wi-save-btn {
+	font-size: 14px;
+	margin: 38px !important;
+	width: 300px;
+	height: 50px;
+}
 
 /* ==========================================================================
-	Modal
-	========================================================================== */
+   Modal
+   ========================================================================== */
 
 .wi-modal {
-	position: fixed; inset: 0; z-index: 9999;
-	display: flex; align-items: center; justify-content: center;
+	position: fixed;
+	inset: 0;
+	z-index: 9999;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	background: rgba(0,0,0,.45);
 }
+
 .wi-modal__dialog {
 	background: grey;
 	color: #000 !important;
-	border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,.2);
-	padding: 16px; width: 520px; max-width: calc(100vw - 32px); max-height: calc(100vh - 32px);
+	border-radius: 10px;
+	box-shadow: 0 10px 40px rgba(0,0,0,.2);
+	padding: 16px;
+	width: 520px;
+	max-width: calc(100vw - 32px);
+	max-height: calc(100vh - 32px);
 	overflow: auto;
 }
-html.wi-dark .wi-modal__dialog { background: #1e1e1e; color: #fff; }
-.wi-modal__actions { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
+
+html.wi-dark .wi-modal__dialog {
+	background: #1e1e1e;
+	color: #fff;
+}
+
+.wi-modal__actions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-top: 12px;
+}
 
 /* ==========================================================================
-	Add-Ons / Extensions
-	========================================================================== */
+   Add-Ons / Extensions
+   ========================================================================== */
 
 /* Switch */
-.wicked-invoicing-admin .wkd-switch { position: relative; display: inline-block; width: 46px; height: 22px; }
-.wicked-invoicing-admin .wkd-switch input { opacity: 0; width: 0; height: 0; }
-.wicked-invoicing-admin .wkd-switch__slider { position: absolute; cursor: pointer; inset: 0; background: #ccc; border-radius: 999px; transition: .2s; }
+.wicked-invoicing-admin .wkd-switch {
+	position: relative;
+	display: inline-block;
+	width: 46px;
+	height: 22px;
+}
+.wicked-invoicing-admin .wkd-switch input {
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+.wicked-invoicing-admin .wkd-switch__slider {
+	position: absolute;
+	cursor: pointer;
+	inset: 0;
+	background: #ccc;
+	border-radius: 999px;
+	transition: .2s;
+}
 .wicked-invoicing-admin .wkd-switch__slider:before {
-	content: ""; position: absolute; height: 18px; width: 18px; left: 2px; top: 2px; background: #fff; border-radius: 50%; transition: .2s;
+	content: "";
+	position: absolute;
+	height: 18px;
+	width: 18px;
+	left: 2px;
+	top: 2px;
+	background: #fff;
+	border-radius: 50%;
+	transition: .2s;
 }
-.wicked-invoicing-admin .wkd-switch input:checked + .wkd-switch__slider { background: var(--accent, #2271b1); }
-.wicked-invoicing-admin .wkd-switch input:checked + .wkd-switch__slider:before { transform: translateX(24px); }
+.wicked-invoicing-admin .wkd-switch input:checked + .wkd-switch__slider {
+	background: var(--accent, #2271b1);
+}
+.wicked-invoicing-admin .wkd-switch input:checked + .wkd-switch__slider:before {
+	transform: translateX(24px);
+}
 
-/* Grid (legacy) */
+/* Grid/list */
 .wicked-invoicing-admin .wkd-addon-grid {
-	display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+	display: grid;
+	gap: 16px;
+	grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 }
-
-/* One-column list (current) */
-.wicked-invoicing-admin .wkd-addon-list { display: block; }
+.wicked-invoicing-admin .wkd-addon-list {
+	display: block;
+}
 
 /* Card */
 .wicked-invoicing-admin .wkd-addon-card {
-	margin-bottom: 12px; padding: 16px;
-	border: 1px solid #dcdcde; border-radius: 8px; background: #fff;
-	box-shadow: 0 1px 0 rgba(0,0,0,.04); transition: box-shadow .15s, border-color .15s;
+	margin-bottom: 12px;
+	padding: 16px;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+	background: #fff;
+	box-shadow: 0 1px 0 rgba(0,0,0,.04);
+	transition: box-shadow .15s, border-color .15s;
 }
-.wicked-invoicing-admin .wkd-addon-card:hover { border-color: #c3c4c7; box-shadow: 0 2px 10px rgba(0,0,0,.06); }
-.wicked-invoicing-admin .wkd-addon-card.is-active { border-color: var(--accent, #2271b1); }
+.wicked-invoicing-admin .wkd-addon-card:hover {
+	border-color: #c3c4c7;
+	box-shadow: 0 2px 10px rgba(0,0,0,.06);
+}
+.wicked-invoicing-admin .wkd-addon-card.is-active {
+	border-color: var(--accent, #2271b1);
+}
 
 /* Card header */
 .wicked-invoicing-admin .wkd-addon-card__head {
-	display: flex; align-items: center; justify-content: space-between; gap: 12px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
 }
-.wicked-invoicing-admin .wkd-addon-card__title { display: flex; align-items: center; gap: 12px; min-width: 0; }
-.wicked-invoicing-admin .wkd-addon-card__title-text { display: flex; flex-direction: column; gap: 4px; }
+.wicked-invoicing-admin .wkd-addon-card__title {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	min-width: 0;
+}
+.wicked-invoicing-admin .wkd-addon-card__title-text {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
 
 /* Icon */
-.wicked-invoicing-admin .wkd-addon-icon { width: 28px; height: 28px; object-fit: contain; border-radius: 4px; }
-.wicked-invoicing-admin .wkd-addon-icon--placeholder { width: 28px; height: 28px; background: #e9ecef; border-radius: 4px; }
+.wicked-invoicing-admin .wkd-addon-icon {
+	width: 28px;
+	height: 28px;
+	object-fit: contain;
+	border-radius: 4px;
+}
+.wicked-invoicing-admin .wkd-addon-icon--placeholder {
+	width: 28px;
+	height: 28px;
+	background: #e9ecef;
+	border-radius: 4px;
+}
 
 /* Content */
-.wicked-invoicing-admin .wkd-addon-title { margin: 0; font-size: 15px; font-weight: 600; color: #000 !important; }
-.wicked-invoicing-admin .wkd-addon-desc { margin: 8px 0 10px; color: #444; }
+.wicked-invoicing-admin .wkd-addon-title {
+	margin: 0;
+	font-size: 15px;
+	font-weight: 600;
+	color: #000 !important;
+}
+.wicked-invoicing-admin .wkd-addon-desc {
+	margin: 8px 0 10px;
+	color: #444;
+}
 
 /* Meta row + badges */
-.wicked-invoicing-admin .wkd-addon-meta-row { display: flex; gap: 8px; align-items: center; color: #000; font-size: 12px; }
-.wicked-invoicing-admin .wkd-meta::before { content: '•'; margin: 0 6px 0 2px; color: #8c8f94; }
-.wicked-invoicing-admin .wkd-meta:first-child::before { content: ''; margin: 0; }
+.wicked-invoicing-admin .wkd-addon-meta-row {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	color: #000;
+	font-size: 12px;
+}
+.wicked-invoicing-admin .wkd-meta::before {
+	content: '•';
+	margin: 0 6px 0 2px;
+	color: #8c8f94;
+}
+.wicked-invoicing-admin .wkd-meta:first-child::before {
+	content: '';
+	margin: 0;
+}
 .wicked-invoicing-admin .wkd-badge {
-	font-size: 11px; line-height: 1; border-radius: 999px; padding: 4px 8px; border: 1px solid #dcdcde; color: #50575e;
+	font-size: 11px;
+	line-height: 1;
+	border-radius: 999px;
+	padding: 4px 8px;
+	border: 1px solid #dcdcde;
+	color: #50575e;
 }
-.wicked-invoicing-admin .wkd-badge.is-on  { background: rgba(34,113,177,.08); border-color: #2271b1; color: #1d4f7a; }
-.wicked-invoicing-admin .wkd-badge.is-off { background: #f6f7f7; }
+.wicked-invoicing-admin .wkd-badge.is-on {
+	background: rgba(34,113,177,.08);
+	border-color: #2271b1;
+	color: #1d4f7a;
+}
+.wicked-invoicing-admin .wkd-badge.is-off {
+	background: #f6f7f7;
+}
 
-/* Drawer + Footer */
+/* Drawer + footer */
 .wicked-invoicing-admin .wkd-addon-drawer {
-	margin-top: 10px; padding: 12px; border-top: 1px solid #dcdcde; background: #f6f7f7; color: #000;
+	margin-top: 10px;
+	padding: 12px;
+	border-top: 1px solid #dcdcde;
+	background: #f6f7f7;
+	color: #000;
 }
-html.wi-dark .wkd-addon-drawer {  margin-top: 10px; padding: 12px; border-top: 1px solid #dcdcde; background: #f6f7f7; color: #000}
+html.wi-dark .wkd-addon-drawer {
+	margin-top: 10px;
+	padding: 12px;
+	border-top: 1px solid #dcdcde;
+	background: #f6f7f7;
+	color: #000;
+}
 .wicked-invoicing-admin .wkd-addon-card__footer {
-	margin-top: 12px; display: flex; justify-content: space-between; align-items: center;
+	margin-top: 12px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
-
-
-/* Keep the switch on top of content */
-.wi-dark-mode-switch { z-index: 10; }
-
-body.toplevel_page_wicked-invoicing-invoices .wrap > h1.wp-heading-inline,
-body.toplevel_page_wicked-invoicing-invoices .wrap .page-title-action,
-body.toplevel_page_wicked-invoicing-invoices .wrap .subsubsub { display:none !important; }
-
-
-/* repeat similar three selectors for each wicked-invoicing_* submenu page class if needed */
-
-/* ==========================================================================
-	Dashboard tab
-	========================================================================== */
-
-
-	/* Ensure notification cards are always interactive */
+/* Ensure notification cards are interactive */
 .wkd-addon-list .wkd-addon-card {
 	filter: none !important;
 	opacity: 1 !important;
 	pointer-events: auto !important;
 }
 
-	/* in your admin CSS */
+/* ==========================================================================
+   Dashboard
+   ========================================================================== */
+
 .wi-feature-grid--full {
 	display: grid;
 	grid-template-columns: 1fr;
 	gap: 16px;
 }
 
-/* (optional) go two-up on wide screens) */
 @media (min-width: 1100px) {
 	.wi-feature-grid--2 {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 16px;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 16px;
 	}
 }
 
-/* Dashboard layout */
 .wi-dashboard-toolbar {
-	display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
 }
-.wi-toolbar-controls { display: flex; gap: .75rem; align-items: flex-end; }
-.wi-field { display: grid; gap: .25rem; }
-.wi-field-label { font-size: 12px; opacity: .8; }
+
+.wi-toolbar-controls {
+	display: flex;
+	gap: .75rem;
+	align-items: flex-end;
+}
+
+.wi-field-label {
+	font-size: 12px;
+	opacity: .8;
+}
 
 .wi-dashboard-grid {
 	display: grid;
@@ -641,13 +1396,19 @@ body.toplevel_page_wicked-invoicing-invoices .wrap .subsubsub { display:none !im
 	gap: 12px;
 }
 @media (max-width: 1200px) {
-	.wi-dashboard-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+	.wi-dashboard-grid {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
 }
 @media (max-width: 782px) {
-	.wi-dashboard-grid { grid-template-columns: 1fr 1fr; }
+	.wi-dashboard-grid {
+		grid-template-columns: 1fr 1fr;
+	}
 }
 @media (max-width: 520px) {
-	.wi-dashboard-grid { grid-template-columns: 1fr; }
+	.wi-dashboard-grid {
+		grid-template-columns: 1fr;
+	}
 }
 
 .wi-card {
@@ -656,72 +1417,148 @@ body.toplevel_page_wicked-invoicing-invoices .wrap .subsubsub { display:none !im
 	padding: 14px 16px;
 	background: var(--wi-surface, #fff);
 }
-body.wp-admin .dark-mode .wi-card { background: rgba(255,255,255,.04); border-color: rgba(255,255,255,.12); }
-
-.wi-card-value { font-size: 22px; line-height: 1.2; font-weight: 600; }
-.wi-card-label { font-size: 12px; opacity: .8; }
-
-/* keep it harmless */
-.wi-muted {
-	color: #6b7280;     /* or whatever grey you like */
-	opacity: 1;         /* ensure no global opacity */
-	pointer-events: auto; /* make sure it doesn't block clicks */
+body.wp-admin .dark-mode .wi-card {
+	background: rgba(255,255,255,.04);
+	border-color: rgba(255,255,255,.12);
 }
-.wi-hint { color: #6b7280; }
-.wi-range-hint { margin-top: 6px; }
 
+.wi-card-value {
+	font-size: 22px;
+	line-height: 1.2;
+	font-weight: 600;
+}
+.wi-card-label {
+	font-size: 12px;
+	opacity: .8;
+}
+
+.wi-muted {
+	color: #6b7280;
+	opacity: 1;
+	pointer-events: auto;
+}
+
+.wi-hint {
+	color: #6b7280;
+}
+.wi-range-hint {
+	margin-top: 6px;
+}
+
+/* Recent activity */
 .wi-recent-activity .wi-activity-header {
-	display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
 	margin-bottom: .5rem;
 }
-.wi-activity-pagination { display: flex; align-items: center; gap: .5rem; }
-.wi-activity-page { font-size: 12px; opacity: .8; }
+.wi-activity-pagination {
+	display: flex;
+	align-items: center;
+	gap: .5rem;
+}
+.wi-activity-page {
+	font-size: 12px;
+	opacity: .8;
+}
 
-.wi-activity-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.wi-activity-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: grid;
+	gap: 8px;
+}
 .wi-activity-item {
-	display: grid; grid-template-columns: auto 1fr; gap: 10px;
-	align-items: center; padding: 10px 12px; border: 1px solid var(--wi-border, rgba(0,0,0,.08)); border-radius: 8px;
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 10px;
+	align-items: center;
+	padding: 10px 12px;
+	border: 1px solid var(--wi-border, rgba(0,0,0,.08));
+	border-radius: 8px;
 	background: var(--wi-surface, #fff);
 }
-body.wp-admin .dark-mode .wi-activity-item { background: rgba(255,255,255,.04); border-color: rgba(255,255,255,.12); }
+body.wp-admin .dark-mode .wi-activity-item {
+	background: rgba(255,255,255,.04);
+	border-color: rgba(255,255,255,.12);
+}
 
-.wi-activity-main { display: grid; gap: 4px; }
-.wi-activity-title { display: flex; align-items: baseline; gap: 8px; }
-.wi-activity-id { font-size: 12px; opacity: .8; }
-.wi-activity-meta { display: flex; align-items: center; gap: 12px; font-size: 12px; opacity: .8; }
-.wi-activity-status { display: inline-flex; align-items: center; gap: 4px; }
+.wi-activity-main {
+	display: grid;
+	gap: 4px;
+}
+.wi-activity-title {
+	display: flex;
+	align-items: baseline;
+	gap: 8px;
+}
+.wi-activity-id {
+	font-size: 12px;
+	opacity: .8;
+}
+.wi-activity-meta {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	font-size: 12px;
+	opacity: .8;
+}
+.wi-activity-status {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+}
 
+/* Badges */
 .wi-badge {
-	display: inline-flex; align-items: center; justify-content: center;
-	font-size: 11px; line-height: 1; padding: 4px 6px; border-radius: 999px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 11px;
+	line-height: 1;
+	padding: 4px 6px;
+	border-radius: 999px;
 	border: 1px solid var(--wi-border, rgba(0,0,0,.1));
 	background: var(--wi-chip, rgba(0,0,0,.03));
 }
-.wi-badge--accent { border-style: solid; }
-.wi-badge--danger { border-style: solid; }
-.wi-badge--warn   { border-style: solid; }
-.wi-badge--info   { border-style: solid; }
+.wi-badge--accent,
+.wi-badge--danger,
+.wi-badge--warn,
+.wi-badge--info {
+	border-style: solid;
+}
 
+/* Skeleton / loading */
 .wi-skeleton {
-	position: relative; overflow: hidden; min-height: 54px;
+	position: relative;
+	overflow: hidden;
+	min-height: 54px;
 	background: linear-gradient(90deg, rgba(0,0,0,.05), rgba(0,0,0,.08), rgba(0,0,0,.05));
-	background-size: 200% 100%; animation: wi-shimmer 1.2s infinite linear;
+	background-size: 200% 100%;
+	animation: wi-shimmer 1.2s infinite linear;
 	border-radius: 8px;
 }
-@keyframes wi-shimmer { 0% { background-position: 200% 0 } 100% { background-position: -200% 0 } }
+@keyframes wi-shimmer {
+	0%   { background-position: 200% 0 }
+	100% { background-position: -200% 0 }
+}
 
-.wi-empty { opacity: .7; }
-.wi-error { color: #a00; }
+.wi-empty {
+	opacity: .7;
+}
+.wi-error {
+	color: #a00;
+}
 
+/* ==========================================================================
+   Notifications – rule cards / logic
+   ========================================================================== */
 
-/* ─────────────────────────────────────────────────────────────
-	Notifications: Rule cards / logic section polish
-	───────────────────────────────────────────────────────────── */
-
-
-	.wi-feature-grid--full { display: grid; grid-template-columns: 1fr; gap: 16px; }
-
-.wi-rule-if select { min-width: 200px; }
+.wi-rule-if select {
+	min-width: 200px;
+}
 
 .wi-rule-divider {
 	height: 10px;
@@ -729,10 +1566,13 @@ body.wp-admin .dark-mode .wi-activity-item { background: rgba(255,255,255,.04); 
 	margin: 10px 0;
 }
 
-.wkd-addon-card.wi-rule-card .wkd-addon-drawer .wi-field-label { font-size: 12px; opacity: .8; color:black; }
+.wkd-addon-card.wi-rule-card .wkd-addon-drawer .wi-field-label {
+	font-size: 12px;
+	opacity: .8;
+	color: #000;
+}
 
-
-/* Slightly stronger header separation inside rule cards */
+/* Rule card header */
 .wi-card .wi-card__header {
 	display: flex;
 	align-items: center;
@@ -742,7 +1582,7 @@ body.wp-admin .dark-mode .wi-activity-item { background: rgba(255,255,255,.04); 
 	margin-bottom: 12px;
 }
 
-/* Logic row (the IF … equals … row) */
+/* Logic row */
 .wi-rule-card .wi-rule-if {
 	display: flex;
 	flex-wrap: wrap;
@@ -754,14 +1594,14 @@ body.wp-admin .dark-mode .wi-activity-item { background: rgba(255,255,255,.04); 
 	background: var(--wi-surface-alt, #f8fafc);
 }
 
-/* A clearer divider after the logic row */
+/* Divider after logic row */
 .wi-rule-card .wi-section-spacer {
 	height: 1px;
 	background: var(--wi-border, rgba(0,0,0,.08));
 	margin: 14px 0;
 }
 
-/* Subject field: roomier and full width */
+/* Subject field */
 .wi-rule-card .wi-field input[type="text"] {
 	width: 100%;
 	padding: 10px 12px;
@@ -769,127 +1609,47 @@ body.wp-admin .dark-mode .wi-activity-item { background: rgba(255,255,255,.04); 
 	line-height: 1.4;
 }
 
-/* Make the tokens line small and subtle */
+/* Tokens hint line */
 .wi-rule-card .wi-muted {
 	font-size: 12px;
 	color: #000;
 	opacity: .8;
-	/* ensure it never blocks clicks on neighbors */
 	pointer-events: auto;
 }
 
-/* Badge spacing and subtle weight */
+/* Rule-card badges */
 .wi-rule-card .wi-badge {
 	padding: 4px 7px;
 	border-radius: 999px;
 	font-weight: 600;
 }
 
-/* Keep selects and labels vertically centered with a bit of space */
+/* Selects in logic row */
 .wi-rule-card select {
 	min-width: 180px;
 	height: 34px;
 }
 
-/* Mobile stack: logic row components go full width neatly */
+/* Mobile stack for logic row */
 @media (max-width: 600px) {
 	.wi-rule-card .wi-rule-if {
-	flex-direction: column;
-	align-items: stretch;
+		flex-direction: column;
+		align-items: stretch;
 	}
 	.wi-rule-card select {
-	width: 100%;
+		width: 100%;
 	}
 }
 
-/* Optional: a slightly darker alt surface in dark mode */
+/* Dark mode for rule logic row */
 body.wp-admin .dark-mode .wi-rule-card .wi-rule-if {
 	background: rgba(255,255,255,.04);
 	border-color: rgba(255,255,255,.12);
 }
 
-
-
 /* ==========================================================================
-	Responsive
-	========================================================================== */
-
-@media (max-width: 600px) {
-	.wicked-invoicing-admin { margin: 1rem; padding: 12px; }
-	.wicked-invoicing-admin .wicked-tabs { flex-direction: column; gap: 0.5rem; }
-	.wicked-invoicing-admin .wicked-tabs button { width: 100%; font-size: 0.9rem; padding: 0.5rem; }
-	.wicked-invoicing-admin .wicked-tab-content { padding: 1rem; }
-	.wicked-invoicing-admin h1 { font-size: 1.5rem; }
-	.wicked-invoicing-admin h2 { font-size: 1.25rem; }
-
-	.wicked-invoicing-admin .wi-field input,
-	.wicked-invoicing-admin .wi-field textarea { padding: 0.75rem; }
-
-	.wicked-invoicing-admin .wi-logs-container { margin: 0 -12px; padding: 0 12px; }
-
-	.wi-invoices-container .wi-filter-row { flex-direction: column; gap: 0.75rem; }
-	.wi-logs-controls { flex-wrap: wrap; gap: 0.5rem; }
-
-	.wi-save-btn { width: 100px; height: 50px; font-size: 14px; margin: 38px !important; }
-}
-
-
-/* ==========================================================================
-	Button
-	========================================================================== */
-
-/* Base button */
-.wicked-invoicing-admin .wkd-btn {
-	display: inline-flex; align-items: center; gap: 8px;
-	padding: 6px 12px; font-size: 14px; line-height: 1.2;
-	border: 1px solid #ccd0d4; border-radius: 4px;
-	background: #fff; color: #1d2327; cursor: pointer;
-	transition: background .15s, border-color .15s, color .15s;
-}
-.wicked-invoicing-admin .wkd-btn:hover { background: #f6f7f7; border-color: #bfc3c7; }
-.wicked-invoicing-admin .wkd-btn:disabled { opacity: .6; cursor: not-allowed; }
-
-/* Variants */
-.wicked-invoicing-admin .wkd-btn--primary { background: #2271b1; border-color: #1b5a8c; color: #fff; }
-.wicked-invoicing-admin .wkd-btn--primary:hover { background: #1d5f94; border-color: #174e78; }
-.wicked-invoicing-admin .wkd-btn--danger  { background: #dc3232; border-color: #a00; color: #fff; }
-.wicked-invoicing-admin .wkd-btn--danger:hover  { background: #b52a2a; border-color: #7a0000; }
-.wicked-invoicing-admin .wkd-btn--ghost   { background: transparent; border-color: #ccd0d4; color: #1d2327; }
-
-/* Sizes */
-.wicked-invoicing-admin .wkd-btn--small { padding: 4px 10px; font-size: 13px; }
-.wicked-invoicing-admin .wkd-btn--large { padding: 10px 16px; font-size: 16px; }
-
-/* Dark mode (class) */
-html.wi-dark .wicked-invoicing-admin .wkd-btn {
-	background: #1f2124; border-color: #2a2c2f; color: #e5e7eb;
-}
-html.wi-dark .wicked-invoicing-admin .wkd-btn:hover {
-	background: #262a2f; border-color: #35383c;
-}
-html.wi-dark .wicked-invoicing-admin .wkd-btn--primary { background: #2b74b9; border-color: #245f96; color: #fff; }
-html.wi-dark .wicked-invoicing-admin .wkd-btn--danger  { background: #b52a2a; border-color: #7a0000; color: #fff; }
-html.wi-dark .wicked-invoicing-admin .wkd-btn--ghost   { background: transparent; border-color: #2a2c2f; color: #e5e7eb; }
-
-/* Dark mode via :has() */
-#wpwrap:has(.wi-dark-mode-switch input:checked) .wicked-invoicing-admin .wkd-btn {
-	background: #1f2124; border-color: #2a2c2f; color: #e5e7eb;
-}
-#wpwrap:has(.wi-dark-mode-switch input:checked) .wicked-invoicing-admin .wkd-btn:hover {
-	background: #262a2f; border-color: #35383c;
-}
-#wpwrap:has(.wi-dark-mode-switch input:checked) .wicked-invoicing-admin .wkd-btn--primary { background: #2b74b9; border-color: #245f96; color: #fff; }
-#wpwrap:has(.wi-dark-mode-switch input:checked) .wicked-invoicing-admin .wkd-btn--danger  { background: #b52a2a; border-color: #7a0000; color: #fff; }
-#wpwrap:has(.wi-dark-mode-switch input:checked) .wicked-invoicing-admin .wkd-btn--ghost   { background: transparent; border-color: #2a2c2f; color: #e5e7eb; }
-
-
-
-
-	/* ==========================================================================
-		Wicked Invoicing: Settings → Invoice Status Labels
-	========================================================================== */
-
-
+   Settings → Invoice Status Labels
+   ========================================================================== */
 
 .wi-status-labels-grid {
 	display: grid;
@@ -901,7 +1661,7 @@ html.wi-dark .wicked-invoicing-admin .wkd-btn--ghost   { background: transparent
 
 .wi-status-labels-row {
 	display: grid;
-	grid-template-columns: 1fr 2fr; /* label | input */
+	grid-template-columns: 1fr 2fr;
 	align-items: center;
 	gap: 8px 16px;
 }
@@ -914,7 +1674,7 @@ html.wi-dark .wicked-invoicing-admin .wkd-btn--ghost   { background: transparent
 
 .wi-status-labels-row input[type="text"] {
 	width: 100%;
-	min-width: 0; /* prevent overflow in grid cells */
+	min-width: 0;
 	padding: 8px 10px;
 	border: 1px solid #ccc;
 	border-radius: 4px;
@@ -929,7 +1689,6 @@ html.wi-dark .wicked-invoicing-admin .wkd-btn--ghost   { background: transparent
 	margin-top: 4px;
 }
 
-/* Tighter spacing when inside your settings card wrapper, if present */
 .wi-settings-card .wi-status-labels-grid {
 	margin-top: 4px;
 	margin-bottom: 8px;
@@ -938,19 +1697,17 @@ html.wi-dark .wicked-invoicing-admin .wkd-btn--ghost   { background: transparent
 /* Mobile: stack label above input */
 @media (max-width: 640px) {
 	.wi-status-labels-row {
-	grid-template-columns: 1fr;
+		grid-template-columns: 1fr;
 	}
 	.wi-status-labels-row label {
-	margin-bottom: 2px;
+		margin-bottom: 2px;
 	}
 }
 
+/* ==========================================================================
+   Subscription cadence
+   ========================================================================== */
 
-	/* ==========================================================================
-
-	========================================================================== */
-
-	/* Subscription cadence compact layout */
 .wi-cadence-row {
 	display: flex;
 	gap: 16px;
@@ -970,7 +1727,7 @@ html.wi-dark .wicked-invoicing-admin .wkd-btn--ghost   { background: transparent
 }
 
 .wi-cadence-option input[type="radio"] {
-	margin: 0; /* keep tight */
+	margin: 0;
 }
 
 .wi-cadence-label {
@@ -978,222 +1735,346 @@ html.wi-dark .wicked-invoicing-admin .wkd-btn--ghost   { background: transparent
 }
 
 .wi-cadence-number {
-	width: 90px;        /* prevent stretching full width */
+	width: 90px;
 	max-width: 120px;
 	margin-left: 4px;
 }
 
-/* keep the enable checkbox tidy */
+/* Keep enable checkbox tidy */
 .wi-section .wi-field > label > input[type="checkbox"] {
 	margin-right: 6px;
 }
 
-/* ========================================================================== */
-/* Extra Mobile Enhancements (stacking, spacing, touch targets)               */
-/* Paste this at the END of the Wicked Invoicing admin CSS file               */
-/* ========================================================================== */
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
 
-/* Core mobile breakpoint – match WP admin 782px and smaller */
+/* Base button */
+.wicked-invoicing-admin .wkd-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 12px;
+	font-size: 14px;
+	line-height: 1.2;
+	border: 1px solid #ccd0d4;
+	border-radius: 4px;
+	background: #fff;
+	color: #1d2327;
+	cursor: pointer;
+	transition: background .15s, border-color .15s, color .15s;
+}
+.wicked-invoicing-admin .wkd-btn:hover {
+	background: #f6f7f7;
+	border-color: #bfc3c7;
+}
+.wicked-invoicing-admin .wkd-btn:disabled {
+	opacity: .6;
+	cursor: not-allowed;
+}
+
+/* Variants */
+.wicked-invoicing-admin .wkd-btn--primary {
+	background: #2271b1;
+	border-color: #1b5a8c;
+	color: #fff;
+}
+.wicked-invoicing-admin .wkd-btn--primary:hover {
+	background: #1d5f94;
+	border-color: #174e78;
+}
+.wicked-invoicing-admin .wkd-btn--danger {
+	background: #dc3232;
+	border-color: #a00;
+	color: #fff;
+}
+.wicked-invoicing-admin .wkd-btn--danger:hover {
+	background: #b52a2a;
+	border-color: #7a0000;
+}
+.wicked-invoicing-admin .wkd-btn--ghost {
+	background: transparent;
+	border-color: #ccd0d4;
+	color: #1d2327;
+}
+
+/* Sizes */
+.wicked-invoicing-admin .wkd-btn--small {
+	padding: 4px 10px;
+	font-size: 13px;
+}
+.wicked-invoicing-admin .wkd-btn--large {
+	padding: 10px 16px;
+	font-size: 16px;
+}
+
+/* Dark mode (class) */
+html.wi-dark .wicked-invoicing-admin .wkd-btn {
+	background: #1f2124;
+	border-color: #2a2c2f;
+	color: #e5e7eb;
+}
+html.wi-dark .wicked-invoicing-admin .wkd-btn:hover {
+	background: #262a2f;
+	border-color: #35383c;
+}
+html.wi-dark .wicked-invoicing-admin .wkd-btn--primary {
+	background: #2b74b9;
+	border-color: #245f96;
+	color: #fff;
+}
+html.wi-dark .wicked-invoicing-admin .wkd-btn--danger {
+	background: #b52a2a;
+	border-color: #7a0000;
+	color: #fff;
+}
+html.wi-dark .wicked-invoicing-admin .wkd-btn--ghost {
+	background: transparent;
+	border-color: #2a2c2f;
+	color: #e5e7eb;
+}
+
+/* Dark mode via :has() */
+#wpwrap:has(.wi-dark-mode-switch input:checked) .wicked-invoicing-admin .wkd-btn {
+	background: #1f2124;
+	border-color: #2a2c2f;
+	color: #e5e7eb;
+}
+#wpwrap:has(.wi-dark-mode-switch input:checked) .wicked-invoicing-admin .wkd-btn:hover {
+	background: #262a2f;
+	border-color: #35383c;
+}
+#wpwrap:has(.wi-dark-mode-switch input:checked) .wicked-invoicing-admin .wkd-btn--primary {
+	background: #2b74b9;
+	border-color: #245f96;
+	color: #fff;
+}
+#wpwrap:has(.wi-dark-mode-switch input:checked) .wicked-invoicing-admin .wkd-btn--danger {
+	background: #b52a2a;
+	border-color: #7a0000;
+	color: #fff;
+}
+#wpwrap:has(.wi-dark-mode-switch input:checked) .wicked-invoicing-admin .wkd-btn--ghost {
+	background: transparent;
+	border-color: #2a2c2f;
+	color: #e5e7eb;
+}
+
+/* ==========================================================================
+   WP Admin heading cleanup for top-level page
+   ========================================================================== */
+
+body.toplevel_page_wicked-invoicing-invoices .wrap > h1.wp-heading-inline,
+body.toplevel_page_wicked-invoicing-invoices .wrap .page-title-action,
+body.toplevel_page_wicked-invoicing-invoices .wrap .subsubsub {
+	display: none !important;
+}
+
+/* ==========================================================================
+   Responsive – global tweaks
+   ========================================================================== */
+
 @media (max-width: 782px) {
-
-	/* Make the main container breathe a bit and align left on small screens */
 	.wicked-invoicing-admin {
-	margin: 1rem auto;
-	padding: 0.75rem 0.75rem;
-	text-align: left;
+		margin: 1rem auto;
+		padding: 0.75rem 0.75rem;
+		text-align: left;
 	}
 
-	/* Tabs: stacked, full-width, easier to tap */
+	/* Tabs: stacked */
 	.wicked-invoicing-admin .wicked-tabs {
-	flex-direction: column;
-	align-items: stretch;
-	gap: 0.5rem;
+		flex-direction: column;
+		align-items: stretch;
+		gap: 0.5rem;
 	}
 	.wicked-invoicing-admin .wicked-tabs button {
-	width: 100%;
-	justify-content: center;
-	font-size: 0.95rem;
-	padding: 0.6rem 0.75rem;
+		width: 100%;
+		justify-content: center;
+		font-size: 0.95rem;
+		padding: 0.6rem 0.75rem;
 	}
 	.wicked-invoicing-admin .wicked-tab-content {
-	padding: 1rem;
+		padding: 1rem;
 	}
 
-	/* Settings rows: label above field, full width */
+	/* Settings rows: stack label above field */
 	.wicked-invoicing-admin .wi-setting-row {
-	flex-direction: column;
-	align-items: stretch;
-	max-width: 100%;
+		flex-direction: column;
+		align-items: stretch;
+		max-width: 100%;
 	}
 	.wicked-invoicing-admin .wi-setting-row label {
-	min-width: 0;
-	margin: 0 0 4px;
+		min-width: 0;
+		margin: 0 0 4px;
 	}
 	.wicked-invoicing-admin .wi-setting-row input[type="text"],
 	.wicked-invoicing-admin .wi-setting-row textarea {
-	width: 100%;
+		width: 100%;
 	}
 
-	/* Global fields: slightly larger tap targets */
+	/* Global fields: larger tap targets */
 	.wicked-invoicing-admin .wi-field input,
 	.wicked-invoicing-admin .wi-field textarea,
 	.wicked-invoicing-admin .wi-field select {
-	padding: 0.6rem 0.7rem;
-	font-size: 0.95rem;
+		padding: 0.6rem 0.7rem;
+		font-size: 0.95rem;
 	}
 
-	/* Invoices toolbar + logs controls: stack vertically */
+	/* Invoices toolbar + logs controls: stack */
 	.wi-invoice-controls {
-	flex-direction: column;
-	align-items: stretch;
-	text-align: left;
+		flex-direction: column;
+		align-items: stretch;
+		text-align: left;
 	}
 	.wi-invoice-controls .control-left,
 	.wi-invoice-controls .control-center,
 	.wi-invoice-controls .control-right {
-	text-align: left;
-	width: 100%;
+		text-align: left;
+		width: 100%;
 	}
 
 	.wi-logs-controls,
 	.wi-invoices-container .wi-logs-controls {
-	flex-wrap: wrap;
-	justify-content: flex-start;
-	}
-	.wi-logs-controls button,
-	.wi-logs-controls select {
-	width: auto;
+		flex-wrap: wrap;
+		justify-content: flex-start;
 	}
 
-	/* Filters row: full-width inputs stacked */
+	/* Filters row: full-width inputs */
 	.wi-invoices-container .wi-filter-row {
-	flex-direction: column;
-	align-items: stretch;
+		flex-direction: column;
+		align-items: stretch;
 	}
 	.wi-invoices-container .wi-filter-row select,
 	.wi-invoices-container .wi-filter-row input[type="search"] {
-	width: 100%;
+		width: 100%;
 	}
 
-	/* Tables: allow wrapping text and reduce padding */
+	/* Tables: allow wrapping */
 	.wi-invoices-table th,
 	.wi-invoices-table td,
 	.wicked-invoicing-admin .wi-logs-table th,
 	.wicked-invoicing-admin .wi-logs-table td {
-	white-space: normal;
-	padding: 0.45rem 0.5rem;
-	font-size: 0.85rem;
+		white-space: normal;
+		padding: 0.45rem 0.5rem;
+		font-size: 0.85rem;
 	}
 
-	/* Make the invoices/logs containers edge-to-edge but still scrollable */
+	/* Edge-to-edge containers */
 	.wicked-invoicing-admin .wi-logs-container,
 	.wi-invoices-container {
-	margin: 0 -0.75rem;
-	padding: 0 0.75rem;
+		margin: 0 -0.75rem;
+		padding: 0 0.75rem;
 	}
 
-	/* Invoice edit toolbar: stack URL + buttons */
+	/* Invoice edit toolbar */
 	.wi-toolbar {
-	flex-direction: column;
-	align-items: flex-start;
-	padding: 8px 10px;
+		flex-direction: column;
+		align-items: flex-start;
+		padding: 8px 10px;
 	}
 	.wi-toolbar__left,
 	.wi-toolbar__right {
-	width: 100%;
-	justify-content: space-between;
+		width: 100%;
+		justify-content: space-between;
 	}
 	.wi-toolbar__url {
-	max-width: 100%;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
+		max-width: 100%;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
-	/* Save button: full-width on very small devices */
+	/* Save button: full-width */
 	.wi-save-btn {
-	width: 100%;
-	max-width: 100%;
-	margin: 12px 0 !important;
-	height: 44px;
-	font-size: 14px;
+		width: 100%;
+		max-width: 100%;
+		margin: 12px 0 !important;
+		height: 44px;
+		font-size: 14px;
 	}
 
-	/* Line items: make grid more flexible */
+	/* Line items: flexible grid */
 	.wi-item__row {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 10px;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
 	}
 	.wi-item__field,
 	.wi-item__total,
 	.wi-item__actions {
-	flex: 1 1 140px;
-	min-width: 140px;
+		flex: 1 1 140px;
+		min-width: 140px;
 	}
 
-	/* New client card: stack fields in a single column on narrow screens */
+	/* New client card: stack fields */
 	.wi-new-client .wi-grid-2 {
-	grid-template-columns: 1fr;
+		grid-template-columns: 1fr;
 	}
 
-	/* Add-on cards: header content stacked, switch aligned under title */
+	/* Add-on cards: stack header */
 	.wicked-invoicing-admin .wkd-addon-card__head {
-	flex-direction: column;
-	align-items: flex-start;
+		flex-direction: column;
+		align-items: flex-start;
 	}
 	.wicked-invoicing-admin .wkd-addon-card__footer {
-	flex-direction: column;
-	align-items: flex-start;
-	gap: 8px;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 8px;
 	}
 
-	/* Dashboard toolbar: controls stack nicely */
+	/* Dashboard toolbar */
 	.wi-dashboard-toolbar {
-	flex-direction: column;
-	align-items: flex-start;
+		flex-direction: column;
+		align-items: flex-start;
 	}
 	.wi-toolbar-controls {
-	width: 100%;
-	flex-wrap: wrap;
+		width: 100%;
+		flex-wrap: wrap;
 	}
 
-	/* Dark mode toggle: avoid overlapping content on small screens */
+	/* Dark mode toggle: avoid overlapping content */
 	.wicked-invoicing-admin .wi-dark-mode-switch {
-	position: relative;
-	top: 0;
-	right: 0;
-	margin-left: auto;
-	margin-bottom: 0.75rem;
+		position: relative;
+		top: 0;
+		right: 0;
+		margin-left: auto;
+		margin-bottom: 0.75rem;
 	}
 }
 
-/* Very small screens – tighten up even more */
-@media (max-width: 480px) {
-
+@media (max-width: 600px) {
 	.wicked-invoicing-admin h1 {
-	font-size: 1.25rem;
+		font-size: 1.5rem;
 	}
 	.wicked-invoicing-admin h2 {
-	font-size: 1.1rem;
+		font-size: 1.25rem;
+	}
+}
+
+@media (max-width: 480px) {
+	.wicked-invoicing-admin h1 {
+		font-size: 1.25rem;
+	}
+	.wicked-invoicing-admin h2 {
+		font-size: 1.1rem;
 	}
 
-	/* Make buttons a bit taller for thumbs */
+	/* Make buttons taller for thumbs */
 	.wicked-invoicing-admin .wkd-btn {
-	padding: 8px 12px;
-	font-size: 13px;
+		padding: 8px 12px;
+		font-size: 13px;
 	}
 
-	/* Invoice status selects: full width when inside table cells that stack */
+	/* Invoice status selects: full width when stacked */
 	.wi-invoices-table select.status-select {
-	width: 100%;
-	box-sizing: border-box;
+		width: 100%;
+		box-sizing: border-box;
 	}
 
-	/* Logs: slightly smaller text and tighter padding */
+	/* Logs: smaller text */
 	.wicked-invoicing-admin .wi-logs-table th,
 	.wicked-invoicing-admin .wi-logs-table td {
-	font-size: 0.8rem;
-	padding: 0.35rem 0.4rem;
+		font-size: 0.8rem;
+		padding: 0.35rem 0.4rem;
 	}
 }

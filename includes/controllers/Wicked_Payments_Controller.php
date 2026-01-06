@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Wicked_Payments_Controller extends Wicked_Base_Controller {
 
-	const META_KEY = '_wi_payments';
+	const META_KEY = '_wicked_invoicing_payments';
 
 	public function __construct() {
 		$this->boot();
@@ -82,7 +82,7 @@ class Wicked_Payments_Controller extends Wicked_Base_Controller {
 	 * ------------------------------------------------------------------ */
 
 	/**
-	 * Record a payment against an invoice (stored in invoice meta _wi_payments).
+	 * Record a payment against an invoice (stored in invoice meta _wicked_invoicing_payments).
 	 *
 	 * @param array $data
 	 * @return array
@@ -182,7 +182,7 @@ class Wicked_Payments_Controller extends Wicked_Base_Controller {
 	}
 
 	/**
-	 * Updates invoice meta _wi_paid based on succeeded/refunded rows.
+	 * Updates invoice meta _wicked_invoicing_paid based on succeeded/refunded rows.
 	 * Also bumps status to paid when fully paid.
 	 *
 	 * NOTE: Your statuses do NOT include "partial", so we do not set it.
@@ -210,9 +210,9 @@ class Wicked_Payments_Controller extends Wicked_Base_Controller {
 			}
 		}
 
-		update_post_meta( $invoice_id, '_wi_paid', $paid );
+		update_post_meta( $invoice_id, '_wicked_invoicing_paid', $paid );
 
-		$total_raw = get_post_meta( $invoice_id, '_wi_total', true );
+		$total_raw = get_post_meta( $invoice_id, '_wicked_invoicing_total', true );
 		$total     = is_numeric( $total_raw ) ? (float) $total_raw : 0.0;
 
 		if ( $total > 0 ) {
@@ -240,7 +240,7 @@ class Wicked_Payments_Controller extends Wicked_Base_Controller {
 		$invoice = get_post( $invoice_id );
 		if ( ! $invoice || $invoice->post_type !== Wicked_Invoice_Controller::get_cpt_slug() ) {
 			return new WP_Error(
-				'wi_invoice_not_found',
+				'wicked_invoicing_invoice_not_found',
 				__( 'Invoice not found.', 'wicked-invoicing' ),
 				array( 'status' => 404 )
 			);
@@ -255,11 +255,11 @@ class Wicked_Payments_Controller extends Wicked_Base_Controller {
 		if ( $mode === 'view' && current_user_can( 'view_own_invoices' ) ) {
 			return ( (int) $invoice->post_author === get_current_user_id() )
 				? true
-				: new WP_Error( 'wi_payments_forbidden', __( 'You do not have permission to view payments.', 'wicked-invoicing' ), array( 'status' => 403 ) );
+				: new WP_Error( 'wicked_invoicing_payments_forbidden', __( 'You do not have permission to view payments.', 'wicked-invoicing' ), array( 'status' => 403 ) );
 		}
 
 		return new WP_Error(
-			'wi_payments_forbidden',
+			'wicked_invoicing_payments_forbidden',
 			( $mode === 'edit' )
 				? __( 'You do not have permission to modify payments.', 'wicked-invoicing' )
 				: __( 'You do not have permission to view payments.', 'wicked-invoicing' ),
@@ -286,7 +286,7 @@ class Wicked_Payments_Controller extends Wicked_Base_Controller {
 		$invoice = get_post( $invoice_id );
 		if ( ! $invoice || $invoice->post_type !== Wicked_Invoice_Controller::get_cpt_slug() ) {
 			return new WP_Error(
-				'wi_invoice_not_found',
+				'wicked_invoicing_invoice_not_found',
 				__( 'Invoice not found.', 'wicked-invoicing' ),
 				array( 'status' => 404 )
 			);
@@ -306,7 +306,7 @@ class Wicked_Payments_Controller extends Wicked_Base_Controller {
 		$invoice = get_post( $invoice_id );
 		if ( ! $invoice || $invoice->post_type !== Wicked_Invoice_Controller::get_cpt_slug() ) {
 			return new WP_Error(
-				'wi_invoice_not_found',
+				'wicked_invoicing_invoice_not_found',
 				__( 'Invoice not found.', 'wicked-invoicing' ),
 				array( 'status' => 404 )
 			);
@@ -315,7 +315,7 @@ class Wicked_Payments_Controller extends Wicked_Base_Controller {
 		$amount = (float) $request->get_param( 'amount' );
 		if ( $amount <= 0 ) {
 			return new WP_Error(
-				'wi_payment_invalid_amount',
+				'wicked_invoicing_payment_invalid_amount',
 				__( 'Payment amount must be greater than zero.', 'wicked-invoicing' ),
 				array( 'status' => 400 )
 			);
@@ -391,7 +391,7 @@ class Wicked_Payments_Controller extends Wicked_Base_Controller {
 		foreach ( $invoice_ids as $inv_id ) {
 			$inv_id           = (int) $inv_id;
 			$invoice_title    = (string) get_the_title( $inv_id );
-			$invoice_hash     = (string) get_post_meta( $inv_id, '_wi_hash', true );
+			$invoice_hash     = (string) get_post_meta( $inv_id, '_wicked_invoicing_hash', true );
 			$invoice_view_url = $invoice_hash
 				? Wicked_Template_Controller::get_invoice_url( $invoice_hash )
 				: '';

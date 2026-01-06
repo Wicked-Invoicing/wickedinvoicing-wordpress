@@ -1,4 +1,29 @@
+
 /* Wicked Invoicing – standalone invoice styles */
+
+/* ======================================================================
+   Base container & card
+   ====================================================================== */
+
+/* Make the whole page match the invoice background and fill the screen */
+html,
+body.wi-invoice-body {
+	background-color: #f5f5f7;
+}
+
+/* Make the main invoice container at least as tall as the viewport */
+body.wi-invoice-body .wi-invoice-container {
+	min-height: 100vh;
+	box-sizing: border-box;
+}
+
+@supports (padding: max(0px)) {
+	body.wi-invoice-body .wi-invoice-container {
+		/* keep your existing padding on larger screens, but respect safe areas */
+		padding-top: max(3rem, env(safe-area-inset-top));
+		padding-bottom: max(3rem, env(safe-area-inset-bottom));
+	}
+}
 
 .wi-invoice-container {
 	/* Page background and typography */
@@ -10,7 +35,6 @@
 	padding: 3rem 1rem;
 }
 
-/* Card-style invoice layout */
 .wi-invoice-layout {
 	max-width: 900px;
 	margin: 0 auto;
@@ -21,7 +45,9 @@
 	box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
 }
 
-/* Basic block styles (we don’t have wp-block-library here) */
+/* ======================================================================
+   Basic block styles (we don’t have wp-block-library here)
+   ====================================================================== */
 
 .wp-block-heading {
 	margin: 0 0 0.75rem;
@@ -50,7 +76,7 @@
 	min-width: 0;
 }
 
-/* Some column groups must stay on one row */
+/* Some column groups must stay on one row (if used) */
 .wp-block-columns.is-not-stacked-on-mobile {
 	flex-wrap: nowrap;
 }
@@ -66,7 +92,9 @@
 	text-decoration: underline;
 }
 
-/* COMPANY + META */
+/* ======================================================================
+   Company / meta
+   ====================================================================== */
 
 .wi-company-name {
 	font-size: 1.25rem;
@@ -101,7 +129,9 @@
 	color: #444;
 }
 
-/* CLIENT INFO */
+/* ======================================================================
+   Client info
+   ====================================================================== */
 
 .wi-invoice-layout .wi-client-name {
 	font-weight: 600;
@@ -113,14 +143,16 @@
 	color: #555;
 }
 
-/* LINE ITEMS TABLE */
+/* ======================================================================
+   Line items table
+   ====================================================================== */
 
 .wi-line-items {
 	margin-top: 0.75rem;
 	font-size: 0.9rem;
 }
 
-/* Header + rows as grid: Description | Qty | Rate | Discount | Tax | Total */
+/* Desktop: Description | Qty | Rate | Discount | Tax | Total */
 .wi-line-items__header,
 .wi-line-items__row {
 	display: grid;
@@ -158,7 +190,9 @@
 	white-space: nowrap;
 }
 
-/* TOTALS AREA */
+/* ======================================================================
+   Totals area
+   ====================================================================== */
 
 .wi-totals {
 	font-size: 0.95rem;
@@ -182,31 +216,244 @@
 	margin: 0;
 }
 
-/* PAYMENT SECTION */
+/* ======================================================================
+   Payment section
+   ====================================================================== */
 
 .wi-payment-section p {
 	margin-top: 0;
 	font-size: 0.95rem;
 }
 
-/* Small screens: stack columns nicely */
+/* ======================================================================
+   Mobile / narrow screens
+   ====================================================================== */
+
+/* Small screens: keep layout, just tighten spacing & text */
 @media (max-width: 640px) {
-	.wi-invoice-layout {
-	padding: 1.75rem 1.25rem;
+	.wi-invoice-container {
+		padding: 1.5rem 0.75rem;
+		font-size: 14px; /* slightly smaller base font */
 	}
 
+	.wi-invoice-layout {
+		max-width: 100%;
+		padding: 1.5rem 1rem;
+	}
+
+	/* Stack columns (top sections) but don't touch line-item columns */
 	.wp-block-columns {
-	flex-direction: column;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	/* Make line items more compact but keep the same 6-column layout */
+	.wi-line-items {
+		font-size: 0.8rem; /* smaller text in the grid */
 	}
 
 	.wi-line-items__header,
 	.wi-line-items__row {
-	grid-template-columns: 2fr 0.75fr 1fr 1fr;
-	grid-template-areas:
-		"desc desc desc desc"
-		"qty rate disc tax"
-		"total total total total";
+		column-gap: 0.25rem;  /* tighter columns */
 	}
 
-	/* You can tweak mobile behavior more if needed */
+	/* Let the description wrap if it needs to, keeps layout from blowing up */
+	.wi-line-items__cell--description {
+		white-space: normal;
+	}
+
+	/* Numbers can still stay mostly on one line */
+	.wi-line-items__cell--qty,
+	.wi-line-items__cell--rate,
+	.wi-line-items__cell--discount,
+	.wi-line-items__cell--tax,
+	.wi-line-items__cell--total {
+		white-space: nowrap;
+	}
+}
+/* Top invoice header/meta – mobile polish */
+@media (max-width: 640px) {
+	/* Stack the company/info columns (you already have this effect,
+	   but we keep it explicit and scoped to the invoice layout) */
+	.wi-invoice-layout > .wp-block-columns {
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	/* Make the big INVOICE heading smaller and left-aligned on phones */
+	.wi-invoice-layout h2.wp-block-heading.has-text-align-right {
+		text-align: left;
+		font-size: 24px;
+	}
+
+	/* Invoice meta rows (Invoice #, Status, dates, etc.) */
+
+	/* Each meta row becomes a vertical stack: label, then value */
+	.wi-invoice-layout .wi-invoice-meta .wp-block-columns {
+		flex-direction: column;
+		gap: 2px;
+	}
+
+	.wi-invoice-layout .wi-invoice-meta .wp-block-column {
+		flex-basis: 100% !important;
+	}
+
+	/* Labels that were right-aligned look better left-aligned when stacked */
+	.wi-invoice-layout .wi-invoice-meta p.has-text-align-right {
+		text-align: left;
+	}
+
+	/* Give the meta text a slightly smaller size so it feels less crowded */
+	.wi-invoice-layout .wi-invoice-meta p,
+	.wi-invoice-layout .wi-invoice-meta .wp-block-wicked-invoicing-invoice-id,
+	.wi-invoice-layout .wi-invoice-meta .wp-block-wicked-invoicing-status,
+	.wi-invoice-layout .wi-invoice-meta .wp-block-wicked-invoicing-start-date,
+	.wi-invoice-layout .wi-invoice-meta .wp-block-wicked-invoicing-due-date,
+	.wi-invoice-layout .wi-invoice-meta .wp-block-wicked-invoicing-po-number,
+	.wi-invoice-layout .wi-invoice-meta .wp-block-wicked-invoicing-reference-number {
+		font-size: 0.85rem;
+	}
+}
+/* Totals area – mobile stacking */
+@media (max-width: 640px) {
+	/* Each totals row becomes label + value stacked vertically */
+	.wi-invoice-layout .wi-totals .wp-block-columns {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 2px;
+	}
+
+	.wi-invoice-layout .wi-totals .wp-block-column {
+		flex-basis: 100% !important;
+	}
+
+	/* Labels that were right-aligned look better left-aligned when stacked */
+	.wi-invoice-layout .wi-totals p.has-text-align-right {
+		text-align: left;
+	}
+
+	/* Slightly smaller text in totals rows on small screens */
+	.wi-invoice-layout .wi-totals p,
+	.wi-invoice-layout .wi-totals .wp-block-wicked-invoicing-subtotal,
+	.wi-invoice-layout .wi-totals .wp-block-wicked-invoicing-total-discount-amount,
+	.wi-invoice-layout .wi-totals .wp-block-wicked-invoicing-tax-amount,
+	.wi-invoice-layout .wi-totals .wp-block-wicked-invoicing-total {
+		font-size: 0.9rem;
+	}
+}
+@media (max-width: 640px) {
+	/* Amount due block: label + value stacked, left-aligned, with emphasis */
+	.wi-invoice-layout .wi-amount-due {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 2px;
+	}
+
+	.wi-invoice-layout .wi-amount-due p.has-text-align-right {
+		text-align: left;
+		font-size: 1rem;
+	}
+
+	.wi-invoice-layout .wi-amount-due .wp-block-wicked-invoicing-amount-due {
+		font-size: 1.15rem;
+		font-weight: 700;
+	}
+}
+
+
+
+
+/* ======================================================================
+   WPBakery CSS Blocks
+   ====================================================================== */
+/* Hide Description column */
+.wi-li-hide-description .wi-line-items__cell--description {
+	display: none;
+}
+
+/* Hide Quantity column (header uses --quantity, cells use --qty) */
+.wi-li-hide-quantity .wi-line-items__cell--quantity,
+.wi-li-hide-quantity .wi-line-items__cell--qty {
+	display: none;
+}
+
+/* Hide Rate column */
+.wi-li-hide-rate .wi-line-items__cell--rate {
+	display: none;
+}
+
+/* Hide Discount column */
+.wi-li-hide-discount .wi-line-items__cell--discount {
+	display: none;
+}
+
+/* Hide Tax column */
+.wi-li-hide-tax .wi-line-items__cell--tax {
+	display: none;
+}
+
+/* Hide Total column */
+.wi-li-hide-total .wi-line-items__cell--total {
+	display: none;
+}
+
+/* Example compact / bordered styles if you want them: */
+.wi-li-style-compact .wi-line-items__cell {
+	padding: 2px 6px;
+	font-size: 13px;
+}
+
+.wi-li-style-bordered .wi-line-items__cell {
+	border-bottom: 1px solid #ddd;
+}
+
+/* Amount alignment helpers (assumes amount is right-most column). */
+.wi-li-amount-right .wi-line-items__cell--total,
+.wi-li-amount-right .wi-line-items__cell--tax {
+	text-align: right;
+}
+
+.wi-li-amount-left .wi-line-items__cell--total,
+.wi-li-amount-left .wi-line-items__cell--tax {
+	text-align: left;
+}
+
+.wi-li-amount-center .wi-line-items__cell--total,
+.wi-li-amount-center .wi-line-items__cell--tax {
+	text-align: center;
+}
+
+/* Compact line items layout */
+.wi-li-style-compact table.wi-line-items-table {
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.wi-li-style-compact table.wi-line-items-table th,
+.wi-li-style-compact table.wi-line-items-table td {
+    padding: 4px 6px;
+}
+
+/* Bordered layout */
+.wi-li-style-bordered table.wi-line-items-table,
+.wi-li-style-bordered table.wi-line-items-table th,
+.wi-li-style-bordered table.wi-line-items-table td {
+    border: 1px solid #ddd;
+}
+
+/* Amount / total column alignment (example assumes last column is amount/total) */
+.wi-li-amount-right table.wi-line-items-table th:last-child,
+.wi-li-amount-right table.wi-line-items-table td:last-child {
+    text-align: right;
+}
+
+.wi-li-amount-left table.wi-line-items-table th:last-child,
+.wi-li-amount-left table.wi-line-items-table td:last-child {
+    text-align: left;
+}
+
+.wi-li-amount-center table.wi-line-items-table th:last-child,
+.wi-li-amount-center table.wi-line-items-table td:last-child {
+    text-align: center;
 }

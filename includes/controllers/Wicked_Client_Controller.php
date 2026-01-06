@@ -16,10 +16,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Wicked_Client_Controller extends Wicked_Base_Controller {
 
-	const META_COMPANY_NAME  = '_wkd_company_name';
-	const META_COMPANY_PHONE = '_wkd_company_phone';
-	const META_CC            = '_wkd_cc';   // array of emails
-	const META_BCC           = '_wkd_bcc';  // array of emails
+	const META_COMPANY_NAME  = '_wicked_invoicing_company_name';
+	const META_COMPANY_PHONE = '_wicked_invoicing_company_phone';
+	const META_CC            = '_wicked_invoicing_cc';   // array of emails
+	const META_BCC           = '_wicked_invoicing_bcc';  // array of emails
 
 	const REST_NS = 'wicked-invoicing/v1';
 
@@ -60,31 +60,31 @@ class Wicked_Client_Controller extends Wicked_Base_Controller {
 
 		<table class="form-table" role="presentation">
 			<tr>
-				<th><label for="wkd_company_name"><?php esc_html_e( 'Company Name', 'wicked-invoicing' ); ?></label></th>
+				<th><label for="wicked_invoicing_company_name"><?php esc_html_e( 'Company Name', 'wicked-invoicing' ); ?></label></th>
 				<td>
-					<input type="text" class="regular-text" id="wkd_company_name" name="wkd_company_name"
+					<input type="text" class="regular-text" id="wicked_invoicing_company_name" name="wicked_invoicing_company_name"
 							value="<?php echo esc_attr( $company ); ?>" />
 				</td>
 			</tr>
 			<tr>
-				<th><label for="wkd_company_phone"><?php esc_html_e( 'Company Phone', 'wicked-invoicing' ); ?></label></th>
+				<th><label for="wicked_invoicing_company_phone"><?php esc_html_e( 'Company Phone', 'wicked-invoicing' ); ?></label></th>
 				<td>
-					<input type="text" class="regular-text" id="wkd_company_phone" name="wkd_company_phone"
+					<input type="text" class="regular-text" id="wicked_invoicing_company_phone" name="wicked_invoicing_company_phone"
 							value="<?php echo esc_attr( $phone ); ?>" />
 				</td>
 			</tr>
 			<tr>
-				<th><label for="wkd_cc"><?php esc_html_e( 'CC (comma-separated emails)', 'wicked-invoicing' ); ?></label></th>
+				<th><label for="wicked_invoicing_cc"><?php esc_html_e( 'CC (comma-separated emails)', 'wicked-invoicing' ); ?></label></th>
 				<td>
-					<input type="text" class="regular-text" id="wkd_cc" name="wkd_cc"
+					<input type="text" class="regular-text" id="wicked_invoicing_cc" name="wicked_invoicing_cc"
 							placeholder="name@example.com, other@example.com"
 							value="<?php echo esc_attr( $cc_str ); ?>" />
 				</td>
 			</tr>
 			<tr>
-				<th><label for="wkd_bcc"><?php esc_html_e( 'BCC (comma-separated emails)', 'wicked-invoicing' ); ?></label></th>
+				<th><label for="wicked_invoicing_bcc"><?php esc_html_e( 'BCC (comma-separated emails)', 'wicked-invoicing' ); ?></label></th>
 				<td>
-					<input type="text" class="regular-text" id="wkd_bcc" name="wkd_bcc"
+					<input type="text" class="regular-text" id="wicked_invoicing_bcc" name="wicked_invoicing_bcc"
 							placeholder="name@example.com, other@example.com"
 							value="<?php echo esc_attr( $bcc_str ); ?>" />
 				</td>
@@ -106,27 +106,30 @@ class Wicked_Client_Controller extends Wicked_Base_Controller {
 			return;
 		}
 
-		// Nonce verification (fixes Missing nonce verification warnings)
+		// Nonce verification.
 		$nonce = '';
 		if ( isset( $_POST[ self::PROFILE_NONCE_NAME ] ) ) {
 			$nonce = sanitize_text_field( wp_unslash( $_POST[ self::PROFILE_NONCE_NAME ] ) );
 		}
 
-		if ( '' === $nonce || ! wp_verify_nonce( $nonce, self::PROFILE_NONCE_ACTION ) ) {
+		if ( empty( $nonce ) ) {
 			return;
 		}
 
-		$company = isset( $_POST['wkd_company_name'] )
-			? sanitize_text_field( wp_unslash( $_POST['wkd_company_name'] ) )
+		if ( ! wp_verify_nonce( $nonce, self::PROFILE_NONCE_ACTION ) ) {
+			return;
+		}
+
+		$company = isset( $_POST['wicked_invoicing_company_name'] )
+			? sanitize_text_field( wp_unslash( $_POST['wicked_invoicing_company_name'] ) )
+			: '';
+		$phone   = isset( $_POST['wicked_invoicing_company_phone'] )
+			? sanitize_text_field( wp_unslash( $_POST['wicked_invoicing_company_phone'] ) )
 			: '';
 
-		$phone = isset( $_POST['wkd_company_phone'] )
-			? sanitize_text_field( wp_unslash( $_POST['wkd_company_phone'] ) )
-			: '';
-
-		// Sanitize the raw strings before parsing (fixes “InputNotSanitized” warnings)
-		$cc_raw  = isset( $_POST['wkd_cc'] ) ? sanitize_text_field( wp_unslash( $_POST['wkd_cc'] ) ) : '';
-		$bcc_raw = isset( $_POST['wkd_bcc'] ) ? sanitize_text_field( wp_unslash( $_POST['wkd_bcc'] ) ) : '';
+		// Sanitize the raw strings before parsing.
+		$cc_raw  = isset( $_POST['wicked_invoicing_cc'] ) ? sanitize_text_field( wp_unslash( $_POST['wicked_invoicing_cc'] ) ) : '';
+		$bcc_raw = isset( $_POST['wicked_invoicing_bcc'] ) ? sanitize_text_field( wp_unslash( $_POST['wicked_invoicing_bcc'] ) ) : '';
 
 		$cc  = $this->parse_email_list( $cc_raw );
 		$bcc = $this->parse_email_list( $bcc_raw );
@@ -136,13 +139,14 @@ class Wicked_Client_Controller extends Wicked_Base_Controller {
 		update_user_meta( $user_id, self::META_CC, $cc );
 		update_user_meta( $user_id, self::META_BCC, $bcc );
 
-		// Ensure wicked_client role exists on the user (non-destructive)
+		// Ensure wicked_client role exists on the user (non-destructive).
 		if ( $user = get_userdata( $user_id ) ) {
 			if ( ! in_array( 'wicked_client', (array) $user->roles, true ) ) {
 				$user->add_role( 'wicked_client' );
 			}
 		}
 	}
+
 
 	/**
 	 * Accepts string "a@b.com, c@d.com" OR array ["a@b.com","c@d.com"].
